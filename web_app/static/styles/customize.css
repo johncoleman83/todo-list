@@ -1,0 +1,70 @@
+@charset "UTF-8";
+/**
+ * -- TODO STYLES
+ */
+body {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+main {
+    flex: 1 0 auto;
+}
+
+.row {
+    padding: 1em 0 .5em;
+}
+
+.fa-2x {
+    font-size: 2em !important;
+}
+
+.fa-3x {
+    font-size: 3em !important;
+}
+
+.select-dropdown li img {
+    height: 30px;
+    width: 30px;
+    margin: 5px 5px;
+    float: right;
+}
+
+#header {
+    margin-bottom: 5px;
+    padding: 0;
+}
+
+#header-image {
+    margin-right: 25px;
+    width: 64px;
+    height: 64px;
+    border-radius: 50px;
+    box-shadow: 0 0 4px 1px #9a9a9a;
+}
+
+#facebook-container {
+    max-width: 600px;
+}
+
+.dropdown-content li {
+    min-height: 25px;
+    line-height: 1rem;
+}
+
+.dropdown-content li>a, .dropdown-content li>span {
+    padding: 4px 2px;
+}
+
+#task-add-icon {
+    margin-right: 10px;
+}
+
+.bottom-button {
+    margin-top: 20px;
+}
+
+#save-message {
+    margin-left: 15px;
+}

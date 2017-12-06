@@ -1,0 +1,41 @@
+@charset "UTF-8";
+/**
+ * -- TODO STYLES
+ */
+
+.secondary-content-trash {
+    float: left;
+    color: #EF5350;
+}
+
+.secondary-content-edit{
+    float: left;
+}
+
+.task-color {
+    width: 20px;
+    margin: 3px 5px 0 0;
+}
+.task-editions {
+    padding-right: 8px;
+}
+
+.select-wrapper {
+    overflow: scroll;
+}
+
+#taskEdit {
+    width: 90%;
+}
+
+.task-done {
+    text-decoration: line-through;
+}
+
+#todo-list li.collection-item a {
+
+}
+
+#todo-list li.collection-item:hover a {
+    display: initial;
+}
