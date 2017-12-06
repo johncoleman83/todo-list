@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- SCRIPTS -->
+    <script type="text/javascript"
+	    src="js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript"
+	    src="js/materialize.min.js"></script>
+    <script type="text/javascript"
+	    src="js/todo.js"></script>
+
+    <!-- STYLES -->
+    <link rel="stylesheet"
+	  href="styles/todo.css">
+    <link rel="stylesheet"
+	  href="styles/materialize.min.css">
+    <link rel="stylesheet"
+	  href="styles/font-awesome.css">
+
+  </head>
+  <body class="grey lighten-4">
+    <div class="grey lighten-4">
+      <div id="controls" class="row">
+        <div class="col s4 offset-s2 center">
+          <input type="checkbox" id="cbCheckAll" />
+          <label for="cbCheckAll">Check All</label>
+        </div>
+        <div class="col s4 center">
+          <button id="btnDelDone"
+		  class="btn red lighten-1">
+		  <i class="fa fa-trash-o" aria-hidden="true"></i>
+		  <span class="hide-on-med-and-down">Delete Checked</span></button>    
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="container">
+	<div class="row">
+            <ul id="todo-list" class="collection hoverable">
+              <li
+		id="newTaskListItem"
+		class="collection-item">
+		<div class="row">
+		  <div class="input-field col l2 s4">
+		    <select id="inputDateLabel" >
+		      <option value="0">none</option>
+		      <option value="1">Deadline</option>
+		      <option value="2">Start Time</option>
+		      <option value="3">Appointment</option>
+		    </select>
+		    <label>Date Label</label>
+ 		  </div>
+		  <div class="input-field col l2 s4">
+		    <input id="inputTaskDate"
+			   placeholder="Date"
+			   type="text"
+			   class="datepicker">
+		  </div>
+		  <div class="input-field col l1 s4">
+		    <input id="inputTaskTime"
+			   placeholder="Time"
+			   type="text"
+			   class="timepicker">
+		  </div>
+		  <div class="input-field col l5 s9">
+		    <input placeholder="New Task..."
+			   id="inputNewTask"
+			   type="text"
+			   value=""
+			   name="newTask">
+		  </div>
+		  <div class="input-field col l2 s3">
+		    <select id="inputPriority">
+		      <option value="0">none</option>
+		      <option value="1" data-icon="images/black-circle.png" class="red lighten-1 left circle">red</option>
+		      <option value="2" data-icon="images/black-circle.png" class="orange lighten-1 left circle">orange</option>
+		      <option value="3" data-icon="images/black-circle.png" class="blue lighten-2 left circle">blue</option>
+		    </select>
+		    <label>Priority</label>
+ 		  </div>
+		</div>
+              </li>
+            </ul>
+	</div>
+      </div>
+      <div class="row">
+	<div class="col s12">
+	  <div class="submit-button">
+	    <a id="btnAdd"
+	       class="btn-floating btn-large waves-effect waves-light light-blue disabled">
+	      <i class="fa fa-plus" aria-hidden="true"></i></a>
+	  </div>
+	</div>
+    </div>
+  </body>
+</html>
