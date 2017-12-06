@@ -1,0 +1,35 @@
+@charset "UTF-8";
+/**
+ * -- TODO STYLES
+ */
+body {
+    margin-top: 40px;
+}
+
+.row {
+    padding: 1em 0 .5em;
+}
+
+.fa-2x {
+    font-size: 2em !important;
+}
+
+.fa-3x {
+    font-size: 3em !important;
+}
+
+.select-dropdown li img {
+    height: 30px;
+    width: 30px;
+    margin: 5px 5px;
+    float: right;
+}
+
+#header {
+    margin-bottom: 5px;
+    padding: 0;
+}
+
+#facebook-container {
+    max-width: 600px;
+}

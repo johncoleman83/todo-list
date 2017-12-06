@@ -2,10 +2,6 @@
 /**
  * -- TODO STYLES
  */
-body {
-    margin-top: 40px;
-}
-
 .submit-button {
     padding: 20px;
     float: right;
@@ -30,10 +26,6 @@ body {
 
 #taskEdit {
     width: 90%;
-}
-
-.row {
-    padding: 1em 0 .5em;
 }
 
 .task-done {
