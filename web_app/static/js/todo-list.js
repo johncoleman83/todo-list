@@ -5,7 +5,7 @@ const htmlColors = [
   '<img alt="" src="images/black-circle.png" class="task-color orange lighten-1 left circle">',
   '<img alt="" src="images/black-circle.png" class="task-color blue lighten-1 left circle">'
 ];
-const injections = ['"', "'", '<', '>']
+const injections = [/"/g, /'/g, /</g, />/g]
 const allTasks = {}
 
 function uuidv4() {
@@ -44,13 +44,47 @@ function updateTaskVals (taskId, key, val) {
   allTasks[taskId][key] = val;
 }
 
+function convertToISO (date, time) {
+  date = date.replace(/\//g, '');
+  date = date.slice(4, 8) + date.slice(0, 4);
+  date += 'T';
+  time = time.replace(/:/g, '');
+  let timeEnd = parseInt(time.slice(0, 2)) + 1;
+  console.log(timeEnd)
+  if (timeEnd == 24) {
+    timeEnd = date + '235900Z';
+  } else {
+    timeEnd = date + timeEnd.toString() + time.slice(2, 4) + '00Z';
+  }
+  time += '00Z';
+  return date + time + '%2F' + timeEnd;
+}
+
+
 function taskObjToHtml (taskId) {
   let todoTaskObj = allTasks[taskId];
   let htmlModal = [];
   if (todoTaskObj['color']) { htmlModal.push(htmlColors[jsonColors.indexOf(todoTaskObj['color'])]); }
   if (todoTaskObj['dateLabel']) { htmlModal.push(todoTaskObj['dateLabel'] + ': '); }
-  if (todoTaskObj['date']) { htmlModal.push('<span class="taskDate">' + todoTaskObj['date'] + '</span> '); }
-  if (todoTaskObj['time']) { htmlModal.push('<span class="taskTime">' + todoTaskObj['time'] + '</span> '); }
+  if (todoTaskObj['date']) {
+    let this_time;
+    if (todoTaskObj['time']) {
+      this_time = todoTaskObj['time'];
+    } else {
+      this_time = "12:00";
+    }
+    let date_time = convertToISO(todoTaskObj['date'], this_time);
+    let dateModal = [
+      '<a href="http://www.google.com/calendar/event?action=TEMPLATE&',
+      'text=' + encodeURI(todoTaskObj['text']) + '&',
+      'dates=' + date_time + '&location=&details=" target="_blank">',
+      '<i class="fa fa-calendar-plus-o" aria-hidden="true"></i>',
+      ' + google</a> '
+    ];
+    htmlModal.push(dateModal.join(''));
+    htmlModal.push(todoTaskObj['date'] + ' ');
+  }
+  if (todoTaskObj['time']) { htmlModal.push(todoTaskObj['time'] + ' '); }
   htmlModal.push('<span id="taskTextSpan' + taskId
 		 + '" class="taskText">' + todoTaskObj['text'] + '</span>');
   return htmlModal.join('')
