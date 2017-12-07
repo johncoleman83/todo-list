@@ -2,14 +2,14 @@
 /**
  * -- TODO STYLES
  */
-.submit-button {
-    padding: 20px;
-    float: right;
-}
 
 .secondary-content-trash {
-    float: right;
+    float: left;
     color: #EF5350;
+}
+
+.secondary-content-edit{
+    float: left;
 }
 
 .task-color {

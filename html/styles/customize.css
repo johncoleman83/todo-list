@@ -33,3 +33,16 @@ body {
 #facebook-container {
     max-width: 600px;
 }
+
+.dropdown-content li {
+    min-height: 25px;
+    line-height: 1rem;
+}
+
+.dropdown-content li>a, .dropdown-content li>span {
+    padding: 4px 2px;
+}
+
+#task-add-icon {
+    margin-right: 10px;
+}

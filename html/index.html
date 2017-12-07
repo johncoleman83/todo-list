@@ -7,13 +7,13 @@
     <script type="text/javascript"
 	    src="js/materialize.min.js"></script>
     <script type="text/javascript"
-	    src="js/todo.js"></script>
+	    src="js/todo-list.js"></script>
     <script type="text/javascript"
 	    src="js/facebook-oauth.js"></script>
 
     <!-- STYLES -->
     <link rel="stylesheet"
-	  href="styles/todo.css">
+	  href="styles/todo-list.css">
     <link rel="stylesheet"
 	  href="styles/materialize.min.css">
     <link rel="stylesheet"
@@ -68,9 +68,15 @@
 		<div class="input-field col l2 s3">
 		  <select id="inputPriority">
 		    <option value="0">none</option>
-		    <option value="1" data-icon="images/black-circle.png" class="red lighten-1 left circle">red</option>
-		    <option value="2" data-icon="images/black-circle.png" class="orange lighten-1 left circle">orange</option>
-		    <option value="3" data-icon="images/black-circle.png" class="blue lighten-2 left circle">blue</option>
+		    <option value="1"
+			    data-icon="images/black-circle.png"
+			    class="red lighten-1 left circle">red</option>
+		    <option value="2"
+			    data-icon="images/black-circle.png"
+			    class="orange lighten-1 left circle">orange</option>
+		    <option value="3"
+			    data-icon="images/black-circle.png"
+			    class="blue lighten-2 left circle">blue</option>
 		  </select>
 		  <label>Priority</label>
  		</div>
@@ -92,10 +98,12 @@
 	      <span class="hide-on-med-and-down">Delete Checked</span></button>
           </div>
 	  <div class="col l7 s12">
-	    <div class="submit-button center">
+	    <div class="center">
 	      <a id="btnAdd"
-		 class="btn-floating btn-large waves-effect waves-light light-blue disabled">
-		<i class="fa fa-plus fa-2x" aria-hidden="true"></i></a>
+		 class="btn waves-effect waves-light light-blue disabled">
+		<i id="task-add-icon"
+		   class="fa fa-plus"
+		   aria-hidden="true"></i>add new task</a>
 	    </div>
 	  </div>
 	</div>

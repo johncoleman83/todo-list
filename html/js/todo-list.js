@@ -1,12 +1,60 @@
 var app;
+const dateLabels = ['Deadline', 'Start Time', 'Appointment'];
+const jsonColors = ['red', 'orange', 'blue'];
+const htmlColors = [
+  '<img alt="" src="images/black-circle.png" class="task-color red lighten-1 left circle">',
+  '<img alt="" src="images/black-circle.png" class="task-color orange lighten-1 left circle">',
+  '<img alt="" src="images/black-circle.png" class="task-color blue lighten-1 left circle">'
+];
+const injections = ['"', "'", '<', '>']
+const allTasks = {}
+
+function uuidv4() {
+  let taskId = ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+    (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+  )
+  return taskId
+}
 
 function sleepFor (sleepDuration) {
   var now = new Date().getTime();
   while (new Date().getTime() < now + sleepDuration) { /* do nothing */ }
 }
 
-function isImage (i) {
-  return i instanceof HTMLImageElement;
+function removeInjections(text) {
+  for (let i in injections) {
+    text = text.replace(i, '');
+  }
+  return text;
+}
+
+function createTaskObject (newId, color, dateLabel, date, time, text) {
+  let todoTaskObj = {}
+  todoTaskObj['id'] = newId
+  if (color > 0) { todoTaskObj['color'] = jsonColors[color - 1]; }
+  if (dateLabel > 0) { todoTaskObj['dateLabel'] = dateLabels[dateLabel - 1]; }
+  if (date) { todoTaskObj['date'] = date; }
+  if (time) { todoTaskObj['time'] = time; }
+  text = removeInjections(text);
+  todoTaskObj['text'] = text;
+  allTasks[newId] = todoTaskObj;
+}
+
+function updateTaskVals (taskId, key, val) {
+  val = removeInjections(val);
+  allTasks[taskId][key] = val;
+}
+
+function taskObjToHtml (taskId) {
+  let todoTaskObj = allTasks[taskId];
+  let htmlModal = [];
+  if (todoTaskObj['color']) { htmlModal.push(htmlColors[jsonColors.indexOf(todoTaskObj['color'])]); }
+  if (todoTaskObj['dateLabel']) { htmlModal.push(todoTaskObj['dateLabel'] + ': '); }
+  if (todoTaskObj['date']) { htmlModal.push('<span class="taskDate">' + todoTaskObj['date'] + '</span> '); }
+  if (todoTaskObj['time']) { htmlModal.push('<span class="taskTime">' + todoTaskObj['time'] + '</span> '); }
+  htmlModal.push('<span id="taskTextSpan' + taskId
+		 + '" class="taskText">' + todoTaskObj['text'] + '</span>');
+  return htmlModal.join('')
 }
 
 function setDateTimes () {
@@ -34,7 +82,7 @@ function setDateTimes () {
 
 function App () {
   var self = this;
-  var id = 0;
+  var id = uuidv4();
   var btnAdd = $('#btnAdd');
   // var todoList = $('#todo-list');
   var newTaskListItem = $('#newTaskListItem');
@@ -58,8 +106,17 @@ function App () {
     inputNewTask.focus();
   };
 
+  self.resetAddTaskValues = function () {
+    inputNewTask.val('');
+    inputTaskDate.val('');
+    inputTaskTime.val('');
+    inputDateLabel.val('0');
+    inputPriority.val('0');
+    $('select').material_select();
+  }
+
   self.addTask = function (e) {
-    var newId = self.getId();
+    var newId = uuidv4();
     var text = $.trim(inputNewTask.val());
 
     if (text) {
@@ -67,44 +124,25 @@ function App () {
       let dateLabel = parseInt(inputDateLabel.val());
       let date = $.trim(inputTaskDate.val());
       let time = $.trim(inputTaskTime.val());
-      let textModal = [];
-      if (dateLabel > 0) {
-        let dateLabels = ['Deadline', 'Start Time', 'Appointment'];
-        textModal.push(dateLabels[dateLabel - 1] + ': ');
-      }
-      if (date) {
-        textModal.push('<span class="taskDate">' + date + '</span> ');
-      }
-      if (time) {
-        textModal.push('<span class="taskTime">' + time + '</span> ');
-      }
-      textModal.push('<span id="taskTextSpan' + newId + '" class="taskText">' + text + '</span>');
-
-      if (color > 0) {
-        let colors = [
-          '<img alt="" src="images/black-circle.png" class="task-color red lighten-1 left circle">',
-          '<img alt="" src="images/black-circle.png" class="task-color orange lighten-1 left circle">',
-          '<img alt="" src="images/black-circle.png" class="task-color blue lighten-1 left circle">'
-        ];
-        textModal.push(colors[color - 1]);
-      }
       var newTask = $('<li class="collection-item" data-id="' + newId + '"></li>');
 
+      createTaskObject(newId, color, dateLabel, date, time, text);
+      let htmlModal = taskObjToHtml(newId);
       var cb = $([
-        '<input id="cb' + newId + ' "type="checkbox" name="cb' + newId + '" value="">',
-        '<label id="' + newId + '" for="cb' + newId + '" class="title">' + textModal.join('') + '</label>'
+        '<input id="cb-' + newId + ' "type="checkbox" name="' + newId,
+	'" value="">',
+        '<label id="' + newId + '" for="cb-' + newId + '" class="title">',
+	htmlModal + '</label>'
       ].join(''));
 
       cb.on('click', self.setDone);
       cb.on('dblclick', self.editTask);
-
       var btnDel = $(
         '<a href="" class="secondary-content-trash task-editions"><i class="fa fa-trash-o" aria-hidden="true"></i></a>'
       );
       var btnEdit = $(
-        '<a href="" id="' + newId + '" class="secondary-content task-editions"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>'
+        '<a href="" id="' + newId + '" class="secondary-content-edit task-editions"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>'
       );
-
       btnDel.on('click', self.deleteTask);
       btnEdit.on('click', function (e) {
         e.preventDefault();
@@ -115,19 +153,11 @@ function App () {
         });
         document.getElementById('taskTextSpan' + newId).dispatchEvent(event);
       });
-
-      newTask.append(cb);
       newTask.append(btnEdit);
       newTask.append(btnDel);
-
-      // inputNewTask.parent().before(newTask);
+      newTask.append(cb);
       newTaskListItem.before(newTask);
-      inputNewTask.val('');
-      inputTaskDate.val('');
-      inputTaskTime.val('');
-      inputDateLabel.val('0');
-      inputPriority.val('0');
-      $('select').material_select();
+      self.resetAddTaskValues()
     }
 
     btnAdd.addClass('disabled');
@@ -151,27 +181,23 @@ function App () {
 
   self.deleteTask = function (e) {
     e.preventDefault();
-    var id = $(e.currentTarget).parent().attr('data-id');
-    $('[data-id="' + id + '"]').remove();
+    var taskId = $(e.currentTarget).parent().attr('data-id');
+    $('[data-id="' + taskId + '"]').remove();
+    delete allTasks[taskId]
   };
 
   self.editTask = function (e) {
-    // var timeout = 3000;
     var label = $(e.currentTarget);
     var text = label.text();
-    var id = label.attr('id');
-    console.log(label);
+    var taskId = label.attr('id');
     var taskEdit = $(
-      '<input type="text" name="taskEdit" value="' + text + '" placeholder="" id="taskEdit">'
+      '<input type="text" name="taskEdit" value="' + allTasks[taskId]['text'] + '" placeholder="" id="taskEdit">'
     );
-    var thisChildNodes = label[0].childNodes;
-    var image;
-    for (let i of thisChildNodes) {
-      if (isImage(i)) {
-        image = i;
-      }
-    }
+    //var thisChildNodes = label[0].childNodes;
     var editEnd = function () {
+      let htmlModal = taskObjToHtml(taskId);
+      label.text('');
+      label.append(htmlModal);
       taskEdit.replaceWith(label);
       label.on('click', self.setDone);
       label.on('dblclick', self.editTask);
@@ -180,23 +206,16 @@ function App () {
     taskEdit.on('blur', editEnd);
     taskEdit.on('keyup', function (e) {
       switch (e.keyCode) {
-        // Enter
-        case 13:
-          var newText = $.trim(taskEdit.val());
-          if (newText) {
-            newText = '<span id="taskTextSpan' + id + '" class="taskText">' + newText + '</span>';
-            label.text('');
-            if (image) {
-              label.append(image);
-            }
-            label.append(newText);
-          }
-          editEnd();
-          break;
-        // Escape
-        case 27:
-          editEnd();
-          break;
+      case 13:
+        var newText = $.trim(taskEdit.val());
+        if (newText) {
+	  updateTaskVals(taskId, 'text', newText)
+        }
+        editEnd();
+        break;
+      case 27:
+        editEnd();
+        break;
       }
     });
     taskEdit.select();
@@ -244,14 +263,11 @@ function App () {
 
   self.delDone = function (e) {
     $('#todo-list li input[type="checkbox"]:checked').each(function (i, el) {
+      delete allTasks[$(el).attr('id')];
       $(el).parent().remove();
     });
 
     cbCheckAll.prop('checked', false);
-  };
-
-  self.getId = function () {
-    return id++;
   };
 
   return self;
