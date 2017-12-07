@@ -2,7 +2,8 @@
 """
 Flask App for Todo List MVP
 """
-from flask import Flask, render_template, request, url_for
+from flask import abort, Flask, jsonify
+from flask import render_template, request, url_for
 import json
 #from models import storage
 import requests
@@ -35,7 +36,9 @@ def main_index(the_id=None):
         cache_id = uuid4()
         return render_template('index.html', cache_id=cache_id)
     if request.method == 'POST':
-        pass
+        req_data = request.get_json()
+        print(req_data)
+        return jsonify({"status": "success"}), 200
 
 @app.errorhandler(404)
 def page_not_found(error):

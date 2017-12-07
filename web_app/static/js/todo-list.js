@@ -50,7 +50,6 @@ function convertToISO (date, time) {
   date += 'T';
   time = time.replace(/:/g, '');
   let timeEnd = parseInt(time.slice(0, 2)) + 1;
-  console.log(timeEnd)
   if (timeEnd == 24) {
     timeEnd = date + '235900Z';
   } else {

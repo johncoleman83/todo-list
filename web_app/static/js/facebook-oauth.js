@@ -1,6 +1,12 @@
 // Constsants
 const nowTime = new Date();
 
+// Globals
+var userName;
+var userEmail;
+var userId;
+var userPhoto;
+
 // used for syncing modals with images
 const index = {'count': 0};
 
@@ -35,15 +41,18 @@ function Login () {
 }
 function getUserInfo () {
   FB.api('/me?fields=name,email,id', function (response) {
-    console.log(response);
     if (response.error == undefined) {
+      userName = response.name;
+      userId = response.id;
+      userEmail = response.email
+      getPhoto()
+      var imgHtml = "<img src='" + userPhoto + "'/>";
       let userBar = [
-        '<b>Name</b> : ' + response.name + '<br>',
-        '<b>id: </b>' + response.id + '<br>',
-        '<b>email: </b>' + response.email + '<br>',
-        '<input type="button" value="Get Photo" onclick="getPhoto();"/>  ',
+        '<b>Name</b> : ' + userName + '<br>',
+        '<b>id: </b>' + userId + '<br>',
+        '<b>email: </b>' + userEmail + '<br>',
         '<input type="button" value="Logout" onclick="Logout();"/>',
-        '<div id="fb_profile_image"></div>'
+        '<div id="fb_profile_image">' + imgHtml + '</div>'
       ];
       document.getElementById('status').innerHTML = userBar.join('');
     } else {
@@ -59,8 +68,7 @@ function getUserInfo () {
 
 function getPhoto () {
   FB.api('/me/picture?type=normal', function (response) {
-    var str = "<br/><b>Pic</b> : <img src='" + response.data.url + "'/>";
-    document.getElementById('fb_profile_image').innerHTML = str;
+    userPhoto = response.data.url;
   });
 }
 
