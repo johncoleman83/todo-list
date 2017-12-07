@@ -3,23 +3,23 @@
   <head>
     <!-- SCRIPTS -->
     <script type="text/javascript"
-	    src="js/jquery-3.2.1.min.js"></script>
+	    src="static/js/jquery-3.2.1.min.js"></script>
     <script type="text/javascript"
-	    src="js/materialize.min.js"></script>
+	    src="static/js/materialize.min.js"></script>
     <script type="text/javascript"
-	    src="js/todo-list.js"></script>
+	    src="static/js/todo-list.js?{{ cache_id }}"></script>
     <script type="text/javascript"
-	    src="js/facebook-oauth.js"></script>
+	    src="static/js/facebook-oauth.js?{{ cache_id }}"></script>
 
     <!-- STYLES -->
     <link rel="stylesheet"
-	  href="styles/todo-list.css">
+	  href="static/styles/materialize.min.css">
     <link rel="stylesheet"
-	  href="styles/materialize.min.css">
+	  href="static/styles/font-awesome.css">
     <link rel="stylesheet"
-	  href="styles/font-awesome.css">
+	  href="static/styles/todo-list.css?{{ cache_id }}">
     <link rel="stylesheet"
-	  href="styles/customize.css">
+	  href="static/styles/customize.css?{{ cache_id }}">
 
   </head>
   <body class="grey lighten-4">
@@ -69,13 +69,13 @@
 		  <select id="inputPriority">
 		    <option value="0">none</option>
 		    <option value="1"
-			    data-icon="images/black-circle.png"
+			    data-icon="static/images/black-circle.png"
 			    class="red lighten-1 left circle">red</option>
 		    <option value="2"
-			    data-icon="images/black-circle.png"
+			    data-icon="static/images/black-circle.png"
 			    class="orange lighten-1 left circle">orange</option>
 		    <option value="3"
-			    data-icon="images/black-circle.png"
+			    data-icon="static/images/black-circle.png"
 			    class="blue lighten-2 left circle">blue</option>
 		  </select>
 		  <label>Priority</label>
@@ -100,7 +100,7 @@
 	  <div class="col l7 s12">
 	    <div class="center">
 	      <a id="btnAdd"
-		 class="btn waves-effect waves-light light-blue disabled">
+		 class="btn waves-effect waves-light blue-green disabled">
 		<i id="task-add-icon"
 		   class="fa fa-plus"
 		   aria-hidden="true"></i>add new task</a>

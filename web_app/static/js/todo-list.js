@@ -1,4 +1,3 @@
-var app;
 const dateLabels = ['Deadline', 'Start Time', 'Appointment'];
 const jsonColors = ['red', 'orange', 'blue'];
 const htmlColors = [
@@ -274,7 +273,7 @@ function App () {
 }
 
 $(document).ready(function () {
-  app = new App();
+  var app = new App();
   app.init();
   $('select').material_select();
   setDateTimes();
