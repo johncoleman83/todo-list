@@ -4,6 +4,13 @@
  */
 body {
     margin-top: 40px;
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+main {
+    flex: 1 0 auto;
 }
 
 .row {
@@ -28,6 +35,14 @@ body {
 #header {
     margin-bottom: 5px;
     padding: 0;
+}
+
+#header-image {
+    margin-right: 25px;
+    width: 64px;
+    height: 64px;
+    border-radius: 50px;
+    box-shadow: 0 0 4px 1px #9a9a9a;
 }
 
 #facebook-container {

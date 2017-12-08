@@ -1,3 +1,14 @@
+const localhost = "http://localhost:5001/api";
+const remotehost = "https://cecinestpasun.site/api";
+const domain = localhost;
+
+var rJSON = {
+  "allTasks": allTasks,
+  "name": undefined,
+  "fbid": undefined,
+  "email": undefined
+}
+
 // FB API initializer
 window.fbAsyncInit = function () {
   FB.init({
@@ -32,13 +43,16 @@ function Login () {
 
 function buildFBHTML (userName, userId, userEmail, imgHTML) {
   let userBar = [
-    '<b>Name</b> : ' + userName + '<br>',
-    '<b>id: </b>' + userId + '<br>',
-    '<b>email: </b>' + userEmail + '<br>',
-    '<input type="button" value="Logout" onclick="Logout();"/>',
-    '<div id="fb_profile_image">' + imgHTML + '</div>'
+    '<b>id:</b> ' + userId + '<br><b>email:</b> ' + userEmail,
+    '<br><input class="btn blue darken-1" type="button" value="Logout" onclick="Logout();"/>'
   ];
-  document.getElementById('status').innerHTML = userBar.join('');
+  let headerTheme = [
+    imgHTML, '<h4 id="header-theme"><i>' + userName + '</i></h4>'
+  ]
+  $('header').text((''));
+  $('#status').text((''));
+  $('header').append(headerTheme.join(''));
+  $('#status').append(userBar.join(''));
 }
 
 function buildFBError(cod, message) {
@@ -56,9 +70,14 @@ function getUserInfo () {
       let userName = response.name;
       let userId = response.id;
       let userEmail = response.email
+      rJSON['name'] = userName;
+      rJSON['fbid'] = userId;
+      rJSON['email'] = userEmail;
       FB.api('/me/picture?type=normal', function (response2) {
 	let userPhoto = response2.data.url;
-	let imgHTML = "<img src='" + userPhoto + "'/>";
+	rJSON['photo'] = userPhoto;
+	let imgHTML =
+	    '<img id="header-image" class="left" src="' + userPhoto + '"/>';
 	buildFBHTML(userName, userId, userEmail, imgHTML);
       });
     } else {
@@ -72,26 +91,74 @@ function Logout () {
 }
 
 function checkFacebookStatus () {
+  $('#save-message').text('');
 
   FB.getLoginStatus(function(res){
     if ( res.status == "unknown" ){
-      document.getElementById('message').innerHTML = '<br>Logged Out';
+      $('#fb-status-message').text('Logged Out');
     } else if ( res.status === 'connected' ) {
       getUserInfo();
-      document.getElementById('message').innerHTML = '<br>Connected to Facebook';
+      $('#fb-status-message').text('');
+      let fbConnect =
+	  '<i class="fa fa-facebook-square"></i> Connected to Facebook';
+      $('#fb-status-message').append(fbConnect);
     }
   });
   FB.Event.subscribe('auth.authResponseChange', function (response) {
     if (response.status === 'connected') {
-      document.getElementById('message').innerHTML = '<br>Connected to Facebook';
+      $('#fb-status-message').text('Connected to Facebook');
     } else if (response.status === 'not_authorized') {
-      document.getElementById('message').innerHTML = '<br>Failed to Connect';
+      $('#fb-status-message').text('Failed to Connect');
     } else {
-      document.getElementById('message').innerHTML = '<br>Logged Out';
+      $('#fb-status-message').text('Logged Out');
     }
   });
 }
 
+// Todo List API
+function saveTodoList () {
+  if (typeof rJSON['name'] == 'undefined' ||
+      typeof rJSON['fbid'] == 'undefined' ||
+      typeof rJSON ['email'] == 'undefined') {
+    $('#save-message').text('');
+    let newData = [
+      '<div class="left">',
+      '<i class="fa fa-exclamation-triangle left" aria-hidden="true"></i>',
+      ' you must authenticate to save!</div>'
+    ]
+    $('#save-message').append(newData.join(''))
+  } else {
+    $.ajax({
+      url: domain,
+      type: 'POST',
+      data: JSON.stringify(rJSON),
+      contentType: 'application/json; charset=utf-8',
+      dataType: 'json',
+      success: function (data) {
+	$('#save-message').text('');
+	let newData = [
+	  '<div class="left">',
+	  '<i class="fa fa-telegram" aria-hidden="true"></i>',
+	  ' success!</div>'
+	]
+	$('#save-message').append(newData.join(''))
+      },
+      error: function (data) {
+	$('#save-message').text('');
+	let newData = [
+	  '<div class="left">',
+	  '<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>',
+	  ' error saving! <br>',
+	  JSON.stringify(data),
+	  '</div>'
+	]
+	$('#save-message').append(newData.join(''))
+      }
+    });
+  }
+}
+
 $(document).ready(function () {
   $(document).on('fbload', checkFacebookStatus);
+  $('#saveTodoList').on('click', saveTodoList );
 });

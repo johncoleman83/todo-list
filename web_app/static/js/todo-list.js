@@ -122,7 +122,7 @@ function App () {
   var inputTaskDate = $('#inputTaskDate');
   var inputTaskTime = $('#inputTaskTime');
   var inputDateLabel = $('#inputDateLabel');
-  var inputPriority = $('#inputPriority');
+  var inputColor = $('#inputColor');
   var cbCheckAll = $('#cbCheckAll');
   var btnDelDone = $('#btnDelDone');
 
@@ -143,7 +143,7 @@ function App () {
     inputTaskDate.val('');
     inputTaskTime.val('');
     inputDateLabel.val('0');
-    inputPriority.val('0');
+    inputColor.val('0');
     $('select').material_select();
   }
 
@@ -152,7 +152,7 @@ function App () {
     var text = $.trim(inputNewTask.val());
 
     if (text) {
-      let color = parseInt(inputPriority.val());
+      let color = parseInt(inputColor.val());
       let dateLabel = parseInt(inputDateLabel.val());
       let date = $.trim(inputTaskDate.val());
       let time = $.trim(inputTaskTime.val());
