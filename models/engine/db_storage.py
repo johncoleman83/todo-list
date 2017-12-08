@@ -29,10 +29,21 @@ class DBStorage:
             .format(USER, PW, HOST, DB)
         )
 
+    def verify_tables(self, cls):
+        """
+        verifies if the db has initialized or noe
+        """
+        tables = {"User": "users", "Task": "tasks"}
+        if not self.__engine.dialect.has_table(self.__engine, tables[cls]):
+            return False
+        return True
+
     def all(self, cls=None):
         """
         returns a dictionary of all objects
         """
+        if not self.verify_tables(cls):
+            return {}
         obj_dict = {}
         if cls is not None:
             a_query = self.__session.query(DBStorage.CNC[cls])
@@ -75,6 +86,8 @@ class DBStorage:
         retrieves one user object
         """
         if fbid:
+            if not self.verify_tables("User"):
+                return None
             a_query = self.__session.query(User)
             for user in a_query:
                 if User.text_decrypt(user.fbid) == fbid:
@@ -85,6 +98,8 @@ class DBStorage:
         """
         retrieves one object based on class name and id
         """
+        if not self.verify_tables(obj_cls):
+            return {}
         these_objs = {}
         if obj_cls and obj_id:
             a_query = (self.__session.query(DBStorage.CNC[obj_cls])
@@ -113,6 +128,8 @@ class DBStorage:
            deletes all stored objects, for testing purposes
         """
         for c in DBStorage.CNC.values():
+            if not self.verify_tables(c):
+                continue
             a_query = self.__session.query(c)
             all_objs = [obj for obj in a_query]
             for obj in range(len(all_objs)):

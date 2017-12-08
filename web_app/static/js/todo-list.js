@@ -1,9 +1,7 @@
 const dateLabels = ['Deadline', 'Start Time', 'Appointment'];
 const jsonColors = ['red', 'orange', 'blue'];
 const injections = [/"/g, /'/g, /</g, />/g]
-// TODO
-// make allTasks editable, this is not updating on Delete call
-var allTasks = {}
+const allTasks = {}
 var todoApp
 
 function uuidv4() {
@@ -26,8 +24,9 @@ function removeInjections(text) {
 }
 
 function createTaskObject (newId, color, dateLabel, date, time, text) {
-  let todoTaskObj = {}
-  todoTaskObj['id'] = newId
+  let todoTaskObj = {};
+  todoTaskObj['id'] = newId;
+  todoTaskObj['labelClass'] = 'title';
   if (color > 0) { todoTaskObj['color'] = jsonColors[color - 1]; }
   if (dateLabel > 0) { todoTaskObj['dateLabel'] = dateLabels[dateLabel - 1]; }
   if (date) { todoTaskObj['date'] = date; }
@@ -37,7 +36,7 @@ function createTaskObject (newId, color, dateLabel, date, time, text) {
   allTasks[newId] = todoTaskObj;
 }
 
-function updateTaskVals (taskId, key, val) {
+function updateTaskVal (taskId, key, val) {
   val = removeInjections(val);
   allTasks[taskId][key] = val;
 }
@@ -66,7 +65,7 @@ function taskObjToHtml (taskId) {
   let htmlModal = [];
   if (todoTaskObj['color']) { htmlModal.push(getHtmlColor(todoTaskObj['color'])); }
   if (todoTaskObj['dateLabel']) { htmlModal.push(todoTaskObj['dateLabel'] + ': '); }
-  if (todoTaskObj['date']) {
+ if (todoTaskObj['date']) {
     let this_time;
     if (todoTaskObj['time']) {
       this_time = todoTaskObj['time'];
@@ -117,7 +116,6 @@ function todoAppClass () {
   var self = this;
   var id = uuidv4();
   var btnAdd = $('#btnAdd');
-  // var todoList = $('#todo-list');
   var newTaskListItem = $('#newTaskListItem');
   var inputNewTask = $('#inputNewTask');
   var inputTaskDate = $('#inputTaskDate');
@@ -146,25 +144,28 @@ function todoAppClass () {
     inputDateLabel.val('0');
     inputColor.val('0');
     $('select').material_select();
-  }
+  };
 
-  self.buildTaskAppendToList = function (newId) {
-    let newTask = $('<li class="collection-item" data-id="' + newId + '"></li>');
-    let htmlModal = taskObjToHtml(newId);
+  self.buildTaskAppendToList = function (taskId) {
+    let newTask = $('<li class="collection-item" data-id="' + taskId + '"></li>');
+    let htmlModal = taskObjToHtml(taskId);
+    labelClass = allTasks[taskId]['labelClass'];
     var cb = $([
-      '<input id="cb-' + newId + ' "type="checkbox" name="' + newId,
+      '<input id="cb-' + taskId + '" type="checkbox" name="' + taskId,
       '" value="">',
-      '<label id="' + newId + '" for="cb-' + newId + '" class="title">',
+      '<label id="' + taskId + '" for="cb-' + taskId + '" class="' + labelClass + '">',
       htmlModal + '</label>'
     ].join(''));
 
-    cb.on('click', self.setDone);
+    cb.on('click', self.clickCheckBox);
     cb.on('dblclick', self.editTask);
     var btnDel = $(
-      '<a href="" class="secondary-content-trash task-editions"><i class="fa fa-trash-o" aria-hidden="true"></i></a>'
+      '<a href="" class="secondary-content-trash task-editions">' +
+	'<i class="fa fa-trash-o" aria-hidden="true"></i></a>'
     );
     var btnEdit = $(
-      '<a href="" id="' + newId + '" class="secondary-content-edit task-editions"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>'
+      '<a href="" id="' + taskId + '" class="secondary-content-edit task-editions">' +
+	'<i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>'
     );
     btnDel.on('click', self.deleteTask);
     btnEdit.on('click', function (e) {
@@ -174,12 +175,18 @@ function todoAppClass () {
         'bubbles': true,
         'cancelable': true
       });
-      document.getElementById('taskTextSpan' + newId).dispatchEvent(event);
+      document.getElementById('taskTextSpan' + taskId).dispatchEvent(event);
     });
     newTask.append(btnEdit);
     newTask.append(btnDel);
     newTask.append(cb);
     newTaskListItem.before(newTask);
+    //TODO fix this, when rendering from facebook, this checked box is not being checked
+    if (labelClass == 'text') {
+      $('#' + taskId).prop('checked', true);
+    } else {
+      $('#' + taskId).prop('checked', false);
+    }
   }
 
   self.addTask = function (e) {
@@ -193,11 +200,10 @@ function todoAppClass () {
       let time = $.trim(inputTaskTime.val());
       var newTask = $('<li class="collection-item" data-id="' + newId + '"></li>');
 
-      createTaskObject(newId, color, dateLabel, date, time, text);
+      createTaskObject(newId, color, dateLabel, date, time, text)
       self.buildTaskAppendToList(newId)
       self.resetAddTaskValues()
     }
-
     btnAdd.addClass('disabled');
     inputNewTask.focus();
   };
@@ -207,7 +213,6 @@ function todoAppClass () {
       self.addTask(e);
       return;
     }
-
     var text = $.trim(inputNewTask.val());
     var disabled = btnAdd.hasClass('disabled');
     if (text && disabled) {
@@ -221,7 +226,7 @@ function todoAppClass () {
     e.preventDefault();
     var taskId = $(e.currentTarget).parent().attr('data-id');
     $('[data-id="' + taskId + '"]').remove();
-    allTasks[taskId] = undefined;
+    delete allTasks[taskId];
   };
 
   self.editTask = function (e) {
@@ -229,17 +234,17 @@ function todoAppClass () {
     var text = label.text();
     var taskId = label.attr('id');
     var taskEdit = $(
-      '<input type="text" name="taskEdit" value="' + allTasks[taskId]['text'] + '" placeholder="" id="taskEdit">'
+      '<input type="text" name="taskEdit" value="' + allTasks[taskId]['text'] +
+	'" placeholder="" id="taskEdit">'
     );
-    //var thisChildNodes = label[0].childNodes;
     var editEnd = function () {
       let htmlModal = taskObjToHtml(taskId);
       label.text('');
       label.append(htmlModal);
       taskEdit.replaceWith(label);
-      label.on('click', self.setDone);
+      label.on('click', self.clickCheckBox);
       label.on('dblclick', self.editTask);
-    };
+      };
     label.replaceWith(taskEdit);
     taskEdit.on('blur', editEnd);
     taskEdit.on('keyup', function (e) {
@@ -247,7 +252,7 @@ function todoAppClass () {
       case 13:
         var newText = $.trim(taskEdit.val());
         if (newText) {
-	  updateTaskVals(taskId, 'text', newText)
+	  updateTaskVal(taskId, 'text', newText)
         }
         editEnd();
         break;
@@ -259,33 +264,41 @@ function todoAppClass () {
     taskEdit.select();
   };
 
-  self.setDone = function (e) {
+  self.clickCheckBox = function (e) {
     var label = $(e.currentTarget);
     var cb = label.prev();
     var checked = cb.prop('checked');
-
+    // TODO this function is called twice, and not sure why??
     if (checked) {
-      cb.prop('checked', false);
+      //cb.prop('checked', true);
       label.removeClass('task-done');
+      if (label.attr('id').slice(0, 2) != 'cb') {
+	updateTaskVal(label.attr('id'), 'labelClass', 'title')
+      }
     } else {
-      cb.prop('checked', true);
+      //cb.prop('checked', false);
       label.addClass('task-done');
+      if (label.attr('id').slice(0, 2) != 'cb') {
+	updateTaskVal(label.attr('id'), 'labelClass', 'title task-done')
+      }
     }
   };
 
   self.setAllDone = function () {
     $('#todo-list li input[type="checkbox"]:not(:checked)').each(function (i, el) {
-      var $el = $(el);
-      $el.prop('checked', true);
-      $el.next().addClass('task-done');
+      var element = $(el);
+      element.prop('checked', true);
+      element.next().addClass('task-done');
+      updateTaskVal(element.attr('name'), 'labelClass', 'title task-done')
     });
   };
 
   self.setAllUndone = function () {
     $('#todo-list li input[type="checkbox"]:checked').each(function (i, el) {
-      var $el = $(el);
-      $el.prop('checked', false);
-      $el.next().removeClass('task-done');
+      var element = $(el);
+      element.prop('checked', false);
+      element.next().removeClass('task-done');
+      updateTaskVal(element.attr('name'), 'labelClass', 'title')
     });
   };
 
@@ -301,7 +314,7 @@ function todoAppClass () {
 
   self.delDone = function (e) {
     $('#todo-list li input[type="checkbox"]:checked').each(function (i, el) {
-      allTasks[$(el).attr('id')] = undefined;
+      delete allTasks[el.name];
       $(el).parent().remove();
     });
 
@@ -309,12 +322,6 @@ function todoAppClass () {
   };
 
   self.renderAllTasks = function () {
-    var checked = cbCheckAll.prop('checked');
-
-    if (checked == false) {
-      self.setAllDone();
-    }
-    self.delDone()
     for (let key in allTasks) {
       if (!allTasks.hasOwnProperty(key)) { continue; }
       self.buildTaskAppendToList(key)

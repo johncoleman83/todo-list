@@ -82,6 +82,7 @@ class BaseModel:
                 k: v for k, v in attr_dict.items() if k not in IGNORE
             }
             for key, value in updated_dict.items():
+                print(key, value)
                 setattr(self, key, value)
             self.save()
 

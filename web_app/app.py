@@ -15,7 +15,7 @@ app = Flask(__name__)
 app.url_map.strict_slashes = False
 ERRORS = [
     "Not a JSON", "Missing required information", "Missing id",
-    "Wrong id type"
+    "Wrong id type", "Missing required user information"
 ]
 
 def api_response(state, message, code):
@@ -89,7 +89,10 @@ def update_user_tasks(verified_user, all_tasks):
     for task_id, task in all_tasks.items():
         if task_id in db_user_task_ids:
             db_user_task_ids.remove(task_id)
-            verified_user.bm_update(task)
+            task_to_update = storage.get("Task", task_id)
+            key = "{}.{}".format("Task", task_id)
+            value = task_to_update.get(key)
+            value.bm_update(task)
         else:
             task['user_id'] = user_id
             new_task = Task(**task)
@@ -116,6 +119,9 @@ def verify_proper_post_request(req_data):
         return 2
     if type(fbid) == 'int':
         return 3
+    for attr in REQUIRED:
+        if attr not in user_info:
+            return 4
     return fbid
 
 
@@ -135,13 +141,7 @@ def api_post_handler():
     for req in REQUIRED:
         if req not in user_info:
             return api_response("error", "Missing attribute", 400)
-    all_users = storage.all('User').values()
-    verified_user = None
-    for user in all_users:
-        this_fbid = User.text_decrypt(user.fbid)
-        if verification == this_fbid:
-            verified_user = user
-            break
+    verified_user = storage.get_user_by_fbid(verification)
     if verified_user is None:
         message = initialize_new_task_list(user_info, all_tasks)
         return api_response("success", message, 200)

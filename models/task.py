@@ -14,6 +14,7 @@ class Task(BaseModel, Base):
     user_id = Column(String(60), ForeignKey('users.id'), nullable=False)
     text = Column(String(512), nullable=False)
     color = Column(String(16), nullable=True)
-    date_label = Column(String(16), nullable=True)
+    dateLabel = Column(String(16), nullable=True)
     date = Column(String(16), nullable=True)
     time = Column(String(16), nullable=True)
+    labelClass = Column(String(16), nullable=False)

@@ -73,11 +73,13 @@ function getRequestLoadTodoList () {
     contentType: 'application/json; charset=utf-8',
     dataType: 'json',
     success: function (data) {
-      for (let key in data) {
-	if (!data.hasOwnProperty(key)) { continue; }
-	allTasks[key] = data[key]
+      if (data != "Unknown id") {
+	for (let key in data) {
+	  if (!data.hasOwnProperty(key)) { continue; }
+	  allTasks[key] = data[key];
+	}
+	todoApp.renderAllTasks();
       }
-      todoApp.renderAllTasks();
     },
     error: function (data) {
     }
