@@ -43,51 +43,34 @@ def main_index():
         cache_id = uuid4()
         return render_template('index.html', cache_id=cache_id)
 
-def verify_proper_request(req_data):
+def make_todo_list(verified_user):
     """
-    verifies that proper request has been made
-    """
-    if req_data is None:
-        return 0
-    user_info = req_data.get('userInfo', None)
-    if user_info is None:
-        return 1
-    fbid = user_info.get('fbid', None)
-    if fbid is None:
-        return 2
-    if type(fbid) == 'int':
-        return 3
-    return fbid
-
-def make_todo_task(verified_user):
-    """
-    makes JSON todo list for frontend
+    makes JSON todo list for client
     """
     todo_list = {}
     todo_list['userInfo'] = verified_user.to_json()
-    todo_list['allTasks'] = todo_list['userInfo'].pop('tasks')
-    return todo_list
+    all_tasks = todo_list['userInfo'].pop('tasks')
+    return all_tasks
 
-@app.route('/api', methods=['GET'])
-def api_get_handler():
+
+@app.route('/api/<fbid>', methods=['GET'])
+def api_get_handler(fbid=None):
     """
     handles api get requests
     """
-    req_data = request.get_json()
-    verification = verify_proper_request(req_data)
-    if type(verification).__name__ == "int":
-        return api_response("error", ERRORS[verification], 400)
+    if fbid is None:
+        return api_response("error", "Unknown id", 401)
     all_users = storage.all('User').values()
     verified_user = None
     for user in all_users:
         this_fbid = User.text_decrypt(user.fbid)
-        if verification == this_fbid:
+        if fbid == this_fbid:
             verified_user = user
             break
     if verified_user is None:
-        return api_response("error", "Unknown id", 400)
-    todo_list = make_todo_list(verified_user)
-    return jsonify(todo_list), 201
+        return api_response("error", "Unknown id", 401)
+    all_tasks = make_todo_list(verified_user)
+    return jsonify(all_tasks), 201
 
 def initialize_new_task_list(user_info, all_tasks):
     """
@@ -107,16 +90,40 @@ def update_user_tasks(verified_user, all_tasks):
     updates user task information
     """
     user_id = verified_user.id
-    user_tasks = verified_user.tasks
-    user_task_ids = set([task.id for task in user_tasks])
+    db_user_tasks = verified_user.tasks
+    db_user_task_ids = set([task.id for task in db_user_tasks])
     for task_id, task in all_tasks.items():
-        if task_id in user_task_ids:
+        if task_id in db_user_task_ids:
+            print(db_user_task_ids)
+            db_user_task_ids.remove(task_id)
             verified_user.bm_update(task)
         else:
             task['user_id'] = user_id
             new_task = Task(**task)
             new_task.save()
+    if len(db_user_task_ids) > 0:
+        for task_id in db_user_task_ids:
+            task_to_delete = storage.get("Task", task_id)
+            task_to_delete.delete()
+            print('deleted task')
     return "new tasks updated & created"
+
+def verify_proper_post_request(req_data):
+    """
+    verifies that proper request has been made
+    """
+    if req_data is None:
+        return 0
+    user_info = req_data.get('userInfo', None)
+    if user_info is None:
+        return 1
+    fbid = user_info.get('fbid', None)
+    if fbid is None:
+        return 2
+    if type(fbid) == 'int':
+        return 3
+    return fbid
+
 
 @app.route('/api', methods=['POST'])
 def api_post_handler():
@@ -124,7 +131,7 @@ def api_post_handler():
     handles api post requests
     """
     req_data = request.get_json()
-    verification = verify_proper_request(req_data)
+    verification = verify_proper_post_request(req_data)
     if type(verification).__name__ == "int":
         return api_response("error", ERRORS[verification], 400)
     user_info = req_data.get('userInfo', None)

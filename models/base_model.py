@@ -87,18 +87,15 @@ class BaseModel:
         returns json representation of self
         """
         obj_class = self.__class__.__name__
-        bm_dict = {
-            k: v if self.__is_serializable(v) else str(v)
-            for k, v in self.__dict__.items()
-        }
+        bm_dict = {}
+        for k, v in self.__dict__.items():
+            if v is not None and v != "None":
+                bm_dict[k] = v if self.__is_serializable(v) else str(v)
         if 'tasks' in self.__dict__:
             bm_dict['tasks'] = dict([
                 [task.id, task.to_json()] for task in self.tasks
             ])
         bm_dict.pop('_sa_instance_state', None)
-        bm_dict.update({
-            '__class__': obj_class
-        })
         return(bm_dict)
 
     def __str__(self):

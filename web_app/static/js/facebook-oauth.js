@@ -3,7 +3,7 @@ const remotehost = "https://cecinestpasun.site/api";
 const domain = localhost;
 
 var rJSON = {
-  "allTasks": allTasks,
+  "allTasks": undefined,
   "userInfo": {
     "name": undefined,
     "fbid": undefined,
@@ -66,6 +66,24 @@ function buildFBError(cod, message) {
   document.getElementById('status').innerHTML = userBar.join('');
 }
 
+function getRequestLoadTodoList () {
+  $.ajax({
+    url: domain + '/' + rJSON['userInfo']['fbid'],
+    type: 'GET',
+    contentType: 'application/json; charset=utf-8',
+    dataType: 'json',
+    success: function (data) {
+      for (let key in data) {
+	if (!data.hasOwnProperty(key)) { continue; }
+	allTasks[key] = data[key]
+      }
+      todoApp.renderAllTasks();
+    },
+    error: function (data) {
+    }
+  });
+}
+
 function getUserInfo () {
   FB.api('/me?fields=name,email,id', function (response) {
     if (response.error == undefined) {
@@ -81,6 +99,7 @@ function getUserInfo () {
 	let imgHTML =
 	    '<img id="header-image" class="left" src="' + userPhoto + '"/>';
 	buildFBHTML(userName, userId, userEmail, imgHTML);
+	getRequestLoadTodoList();
       });
     } else {
       buildFBError(response.code, response.error.message);
@@ -99,7 +118,7 @@ function checkFacebookStatus () {
     if ( res.status == "unknown" ){
       $('#fb-status-message').text('Logged Out');
     } else if ( res.status === 'connected' ) {
-      getUserInfo();
+      getUserInfo()
       $('#fb-status-message').text('');
       let fbConnect =
 	  '<i class="fa fa-facebook-square"></i> Connected to Facebook';
@@ -117,8 +136,7 @@ function checkFacebookStatus () {
   });
 }
 
-// Todo List API
-function saveTodoList () {
+function postRequestSaveTodoList () {
   if (typeof rJSON['userInfo']['name'] == 'undefined' ||
       typeof rJSON['userInfo']['fbid'] == 'undefined' ||
       typeof rJSON['userInfo'] ['email'] == 'undefined') {
@@ -130,6 +148,7 @@ function saveTodoList () {
     ]
     $('#save-message').append(newData.join(''))
   } else {
+    rJSON['allTasks'] = allTasks;
     $.ajax({
       url: domain,
       type: 'POST',
@@ -162,5 +181,5 @@ function saveTodoList () {
 
 $(document).ready(function () {
   $(document).on('fbload', checkFacebookStatus);
-  $('#saveTodoList').on('click', saveTodoList );
+  $('#saveTodoList').on('click', postRequestSaveTodoList );
 });

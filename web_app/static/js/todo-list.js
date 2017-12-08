@@ -1,7 +1,8 @@
 const dateLabels = ['Deadline', 'Start Time', 'Appointment'];
 const jsonColors = ['red', 'orange', 'blue'];
 const injections = [/"/g, /'/g, /</g, />/g]
-const allTasks = {}
+allTasks = {}
+var todoApp
 
 function uuidv4() {
   let taskId = ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
@@ -110,7 +111,7 @@ function setDateTimes () {
   });
 }
 
-function App () {
+function todoAppClass () {
   var self = this;
   var id = uuidv4();
   var btnAdd = $('#btnAdd');
@@ -124,8 +125,8 @@ function App () {
   var cbCheckAll = $('#cbCheckAll');
   var btnDelDone = $('#btnDelDone');
 
-  if (!(self instanceof App)) {
-    return new App();
+  if (!(self instanceof todoAppClass)) {
+    return new todoAppClass();
   }
 
   self.init = function () {
@@ -145,6 +146,40 @@ function App () {
     $('select').material_select();
   }
 
+  self.buildTaskAppendToList = function (newId) {
+    let newTask = $('<li class="collection-item" data-id="' + newId + '"></li>');
+    let htmlModal = taskObjToHtml(newId);
+    var cb = $([
+      '<input id="cb-' + newId + ' "type="checkbox" name="' + newId,
+      '" value="">',
+      '<label id="' + newId + '" for="cb-' + newId + '" class="title">',
+      htmlModal + '</label>'
+    ].join(''));
+
+    cb.on('click', self.setDone);
+    cb.on('dblclick', self.editTask);
+    var btnDel = $(
+      '<a href="" class="secondary-content-trash task-editions"><i class="fa fa-trash-o" aria-hidden="true"></i></a>'
+    );
+    var btnEdit = $(
+      '<a href="" id="' + newId + '" class="secondary-content-edit task-editions"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>'
+    );
+    btnDel.on('click', self.deleteTask);
+    btnEdit.on('click', function (e) {
+      e.preventDefault();
+      var event = new MouseEvent('dblclick', {
+        'view': window,
+        'bubbles': true,
+        'cancelable': true
+      });
+      document.getElementById('taskTextSpan' + newId).dispatchEvent(event);
+    });
+    newTask.append(btnEdit);
+    newTask.append(btnDel);
+    newTask.append(cb);
+    newTaskListItem.before(newTask);
+  }
+
   self.addTask = function (e) {
     var newId = uuidv4();
     var text = $.trim(inputNewTask.val());
@@ -157,36 +192,7 @@ function App () {
       var newTask = $('<li class="collection-item" data-id="' + newId + '"></li>');
 
       createTaskObject(newId, color, dateLabel, date, time, text);
-      let htmlModal = taskObjToHtml(newId);
-      var cb = $([
-        '<input id="cb-' + newId + ' "type="checkbox" name="' + newId,
-	'" value="">',
-        '<label id="' + newId + '" for="cb-' + newId + '" class="title">',
-	htmlModal + '</label>'
-      ].join(''));
-
-      cb.on('click', self.setDone);
-      cb.on('dblclick', self.editTask);
-      var btnDel = $(
-        '<a href="" class="secondary-content-trash task-editions"><i class="fa fa-trash-o" aria-hidden="true"></i></a>'
-      );
-      var btnEdit = $(
-        '<a href="" id="' + newId + '" class="secondary-content-edit task-editions"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>'
-      );
-      btnDel.on('click', self.deleteTask);
-      btnEdit.on('click', function (e) {
-        e.preventDefault();
-        var event = new MouseEvent('dblclick', {
-          'view': window,
-          'bubbles': true,
-          'cancelable': true
-        });
-        document.getElementById('taskTextSpan' + newId).dispatchEvent(event);
-      });
-      newTask.append(btnEdit);
-      newTask.append(btnDel);
-      newTask.append(cb);
-      newTaskListItem.before(newTask);
+      self.buildTaskAppendToList(newId)
       self.resetAddTaskValues()
     }
 
@@ -213,7 +219,7 @@ function App () {
     e.preventDefault();
     var taskId = $(e.currentTarget).parent().attr('data-id');
     $('[data-id="' + taskId + '"]').remove();
-    delete allTasks[taskId]
+    allTasks[taskId] = undefined;
   };
 
   self.editTask = function (e) {
@@ -293,19 +299,31 @@ function App () {
 
   self.delDone = function (e) {
     $('#todo-list li input[type="checkbox"]:checked').each(function (i, el) {
-      delete allTasks[$(el).attr('id')];
+      allTasks[$(el).attr('id')] = undefined;
       $(el).parent().remove();
     });
 
     cbCheckAll.prop('checked', false);
   };
 
+  self.renderAllTasks = function () {
+    var checked = cbCheckAll.prop('checked');
+
+    if (checked == false) {
+      self.setAllDone();
+    }
+    self.delDone()
+    for (let key in allTasks) {
+      if (!allTasks.hasOwnProperty(key)) { continue; }
+      self.buildTaskAppendToList(key)
+    }
+  }
   return self;
 }
 
 $(document).ready(function () {
-  var app = new App();
-  app.init();
+  todoApp = new todoAppClass();
+  todoApp.init();
   $('select').material_select();
   setDateTimes();
 });
