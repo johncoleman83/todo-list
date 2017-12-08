@@ -5,7 +5,8 @@ Database storage engine
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker, scoped_session
 from models.base_model import Base
-from models import base_model, task, user
+from models import base_model, task
+from models.user import User
 from models.secrets import USER, PW, HOST, DB
 
 class DBStorage:
@@ -14,7 +15,7 @@ class DBStorage:
     """
     CNC = {
         'Task': task.Task,
-        'User': user.User,
+        'User': User,
     }
     __engine = None
     __session = None
@@ -69,6 +70,36 @@ class DBStorage:
         """
         self.__session.rollback()
 
+    def get_user_by_fbid(self, fbid=None):
+        """
+        retrieves one user object
+        """
+        if fbid:
+            a_query = self.__session.query(User)
+            for user in a_query:
+                if User.text_decrypt(user.fbid) == fbid:
+                    return user
+        return None
+
+    def get(self, obj_cls=None, obj_id=None):
+        """
+        retrieves one object based on class name and id
+        """
+        these_objs = {}
+        if obj_cls and obj_id:
+            a_query = (self.__session.query(DBStorage.CNC[obj_cls])
+                       .filter(DBStorage.CNC[obj_cls].id == obj_id))
+            for obj in a_query:
+                val = "{}.{}".format(type(obj).__name__, obj.id)
+                these_objs[val] = obj
+        return these_objs
+
+    def count(self, cls=None):
+        """
+            returns the count of all objects in storage
+        """
+        return (len(self.all(cls)))
+
     def delete(self, obj=None):
         """
             deletes obj from current database session if not None
@@ -104,19 +135,3 @@ class DBStorage:
             calls remove() on private session attribute (self.session)
         """
         self.__session.remove()
-
-    def get(self, cls, id):
-        """
-        retrieves one object based on class name and id
-        """
-        if cls and id:
-            fetch = "{}.{}".format(cls, id)
-            all_obj = self.all(cls)
-            return all_obj.get(fetch)
-        return None
-
-    def count(self, cls=None):
-        """
-            returns the count of all objects in storage
-        """
-        return (len(self.all(cls)))

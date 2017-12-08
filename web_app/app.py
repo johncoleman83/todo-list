@@ -60,13 +60,7 @@ def api_get_handler(fbid=None):
     """
     if fbid is None:
         return api_response("error", "Unknown id", 401)
-    all_users = storage.all('User').values()
-    verified_user = None
-    for user in all_users:
-        this_fbid = User.text_decrypt(user.fbid)
-        if fbid == this_fbid:
-            verified_user = user
-            break
+    verified_user = storage.get_user_by_fbid(fbid)
     if verified_user is None:
         return api_response("error", "Unknown id", 401)
     all_tasks = make_todo_list(verified_user)
@@ -94,7 +88,6 @@ def update_user_tasks(verified_user, all_tasks):
     db_user_task_ids = set([task.id for task in db_user_tasks])
     for task_id, task in all_tasks.items():
         if task_id in db_user_task_ids:
-            print(db_user_task_ids)
             db_user_task_ids.remove(task_id)
             verified_user.bm_update(task)
         else:
@@ -104,8 +97,9 @@ def update_user_tasks(verified_user, all_tasks):
     if len(db_user_task_ids) > 0:
         for task_id in db_user_task_ids:
             task_to_delete = storage.get("Task", task_id)
-            task_to_delete.delete()
-            print('deleted task')
+            key = "{}.{}".format("Task", task_id)
+            value = task_to_delete.get(key)
+            value.delete()
     return "new tasks updated & created"
 
 def verify_proper_post_request(req_data):

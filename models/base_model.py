@@ -34,6 +34,15 @@ class BaseModel:
             self.id = str(uuid4())
             self.created_at = datetime.utcnow()
 
+    def __secure_from_injection(self, text):
+        """
+        minor security from SQL injections
+        """
+        REP_CHARS = [';', "'", '"']
+        for i in REP_CHARS:
+            text = text.replace(i, '#')
+        return text
+
     def __set_attributes(self, attr_dict):
         """
         private: converts attr_dict values to python class attributes
@@ -48,6 +57,8 @@ class BaseModel:
             )
         attr_dict.pop('__class__', None)
         for attr, val in attr_dict.items():
+            if type(val).__name__ == 'str':
+                val = self.__secure_from_injection(val)
             setattr(self, attr, val)
 
     def __is_serializable(self, obj_v):
@@ -87,6 +98,8 @@ class BaseModel:
         returns json representation of self
         """
         obj_class = self.__class__.__name__
+        if obj_class == "User" and self.tasks:
+            pass
         bm_dict = {}
         for k, v in self.__dict__.items():
             if v is not None and v != "None":

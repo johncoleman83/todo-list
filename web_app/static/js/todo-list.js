@@ -1,7 +1,9 @@
 const dateLabels = ['Deadline', 'Start Time', 'Appointment'];
 const jsonColors = ['red', 'orange', 'blue'];
 const injections = [/"/g, /'/g, /</g, />/g]
-allTasks = {}
+// TODO
+// make allTasks editable, this is not updating on Delete call
+var allTasks = {}
 var todoApp
 
 function uuidv4() {
