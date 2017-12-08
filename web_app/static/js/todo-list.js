@@ -1,10 +1,5 @@
 const dateLabels = ['Deadline', 'Start Time', 'Appointment'];
 const jsonColors = ['red', 'orange', 'blue'];
-const htmlColors = [
-  '<img alt="" src="images/black-circle.png" class="task-color red lighten-1 left circle">',
-  '<img alt="" src="images/black-circle.png" class="task-color orange lighten-1 left circle">',
-  '<img alt="" src="images/black-circle.png" class="task-color blue lighten-1 left circle">'
-];
 const injections = [/"/g, /'/g, /</g, />/g]
 const allTasks = {}
 
@@ -59,11 +54,14 @@ function convertToISO (date, time) {
   return date + time + '%2F' + timeEnd;
 }
 
+function getHtmlColor (color) {
+  return '<img alt="" src="static/images/black-circle.png" class="task-color ' + color + ' lighten-1 left circle">'
+}
 
 function taskObjToHtml (taskId) {
   let todoTaskObj = allTasks[taskId];
   let htmlModal = [];
-  if (todoTaskObj['color']) { htmlModal.push(htmlColors[jsonColors.indexOf(todoTaskObj['color'])]); }
+  if (todoTaskObj['color']) { htmlModal.push(getHtmlColor(todoTaskObj['color'])); }
   if (todoTaskObj['dateLabel']) { htmlModal.push(todoTaskObj['dateLabel'] + ': '); }
   if (todoTaskObj['date']) {
     let this_time;

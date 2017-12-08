@@ -65,7 +65,7 @@ class BaseModel:
         """
         updates the basemodel and sets the correct attributes
         """
-        IGNORE = ['id', 'created_at', 'email', 'fb_id']
+        IGNORE = ['id', 'user_id', 'created_at', 'email', 'fbid']
         if attr_dict:
             updated_dict = {
                 k: v for k, v in attr_dict.items() if k not in IGNORE
@@ -91,10 +91,10 @@ class BaseModel:
             k: v if self.__is_serializable(v) else str(v)
             for k, v in self.__dict__.items()
         }
-        if 'amenities' in self.__dict__:
-            bm_dict['amenities'] = [
-                amen.name for amen in self.amenities
-            ]
+        if 'tasks' in self.__dict__:
+            bm_dict['tasks'] = dict([
+                [task.id, task.to_json()] for task in self.tasks
+            ])
         bm_dict.pop('_sa_instance_state', None)
         bm_dict.update({
             '__class__': obj_class

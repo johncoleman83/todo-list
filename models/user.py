@@ -1,10 +1,12 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 """
 User Class from Models Module
 """
+from cryptography.fernet import Fernet
 import hashlib
 import models
 from models.base_model import BaseModel, Base
+from models.secrets import CIPHER
 from sqlalchemy.orm import relationship
 from sqlalchemy import Column, String, ForeignKey
 from uuid import uuid4
@@ -25,20 +27,29 @@ class User(BaseModel, Base):
         """
         instantiates user object
         """
-        REQUIRED = ['email', 'name', 'photo', 'fbid']
+        REQUIRED = models.REQUIRED
         if kwargs:
             for req in REQUIRED:
                 if req not in kwargs:
                     return None
             for key, val in kwargs.items():
-                kwargs[key] = User.__word_hash_encrypt(val)
+                kwargs[key] = User.text_encrypt(val)
             super().__init__(*args, **kwargs)
 
-    def __word_hash_encrypt(word):
+    def text_encrypt(text):
         """
         encrypts input to encypted string
         """
-        secure = hashlib.md5()
-        secure.update(word.encode("utf-8"))
-        secure_word = secure.hexdigest()
-        return secure_word
+        text_bytes = text.encode('utf-8')
+        encrypted_bytes = CIPHER.encrypt(text_bytes)
+        encrypted_string = encrypted_bytes.decode('utf-8')
+        return encrypted_string
+
+    def text_decrypt(text):
+        """
+        encrypts input to encypted string
+        """
+        text_bytes = text.encode('utf-8')
+        decrypted_bytes = CIPHER.decrypt(text_bytes)
+        decrypted_string = decrypted_bytes.decode('utf-8')
+        return decrypted_string

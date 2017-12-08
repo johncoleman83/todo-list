@@ -4,9 +4,11 @@ const domain = localhost;
 
 var rJSON = {
   "allTasks": allTasks,
-  "name": undefined,
-  "fbid": undefined,
-  "email": undefined
+  "userInfo": {
+    "name": undefined,
+    "fbid": undefined,
+    "email": undefined
+  }
 }
 
 // FB API initializer
@@ -70,12 +72,12 @@ function getUserInfo () {
       let userName = response.name;
       let userId = response.id;
       let userEmail = response.email
-      rJSON['name'] = userName;
-      rJSON['fbid'] = userId;
-      rJSON['email'] = userEmail;
+      rJSON['userInfo']['name'] = userName;
+      rJSON['userInfo']['fbid'] = userId;
+      rJSON['userInfo']['email'] = userEmail;
       FB.api('/me/picture?type=normal', function (response2) {
 	let userPhoto = response2.data.url;
-	rJSON['photo'] = userPhoto;
+	rJSON['userInfo']['photo'] = userPhoto;
 	let imgHTML =
 	    '<img id="header-image" class="left" src="' + userPhoto + '"/>';
 	buildFBHTML(userName, userId, userEmail, imgHTML);
@@ -117,9 +119,9 @@ function checkFacebookStatus () {
 
 // Todo List API
 function saveTodoList () {
-  if (typeof rJSON['name'] == 'undefined' ||
-      typeof rJSON['fbid'] == 'undefined' ||
-      typeof rJSON ['email'] == 'undefined') {
+  if (typeof rJSON['userInfo']['name'] == 'undefined' ||
+      typeof rJSON['userInfo']['fbid'] == 'undefined' ||
+      typeof rJSON['userInfo'] ['email'] == 'undefined') {
     $('#save-message').text('');
     let newData = [
       '<div class="left">',
@@ -139,7 +141,7 @@ function saveTodoList () {
 	let newData = [
 	  '<div class="left">',
 	  '<i class="fa fa-telegram" aria-hidden="true"></i>',
-	  ' success!</div>'
+	  ' ' + JSON.stringify(data) + '</div>'
 	]
 	$('#save-message').append(newData.join(''))
       },

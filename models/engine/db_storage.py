@@ -6,7 +6,7 @@ from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker, scoped_session
 from models.base_model import Base
 from models import base_model, task, user
-from models.mysqlsecrets import USER, PW, HOST, DB
+from models.secrets import USER, PW, HOST, DB
 
 class DBStorage:
     """
