@@ -65,19 +65,19 @@ class DBStorage:
 
     def new(self, obj):
         """
-            adds objects to current database session
+        adds objects to current database session
         """
         self.__session.add(obj)
 
     def save(self):
         """
-            commits all changes of current database session
+        commits all changes of current database session
         """
         self.__session.commit()
 
     def rollback_session(self):
         """
-            rollsback a session in the event of an exception
+        rollsback a session in the event of an exception
         """
         self.__session.rollback()
 
@@ -111,13 +111,13 @@ class DBStorage:
 
     def count(self, cls=None):
         """
-            returns the count of all objects in storage
+        returns the count of all objects in storage
         """
         return (len(self.all(cls)))
 
     def delete(self, obj=None):
         """
-            deletes obj from current database session if not None
+        deletes obj from current database session if not None
         """
         if obj:
             self.__session.delete(obj)
@@ -125,7 +125,7 @@ class DBStorage:
 
     def delete_all(self):
         """
-           deletes all stored objects, for testing purposes
+        deletes all stored objects, for testing purposes
         """
         for c in DBStorage.CNC.values():
             if not self.verify_tables(c):
@@ -139,7 +139,7 @@ class DBStorage:
 
     def reload(self):
         """
-           creates all tables in database & session from engine
+        creates all tables in database & session from engine
         """
         Base.metadata.create_all(self.__engine)
         self.__session = scoped_session(
@@ -149,6 +149,6 @@ class DBStorage:
 
     def close(self):
         """
-            calls remove() on private session attribute (self.session)
+        calls remove() on private session attribute (self.session)
         """
         self.__session.remove()
