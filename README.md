@@ -4,9 +4,11 @@ simple todo list
 ## Demo
 https://cecinestpasun.site/todo (coming soon!)
 
-# Description
+## Description
 
-# Environment
+This is a basic todo app demonstrating some of my full stack skills
+
+## Environment
 
 * __OS:__ Linux Ubuntu 16.04.3 LTS (xenial)
 * __firewall:__ ufw 0.35
@@ -27,11 +29,17 @@ https://cecinestpasun.site/todo (coming soon!)
   * __web static:__ [W3C Validator](https://validator.w3.org/)
   * __JavaScript:__ semistandard 11.0.0
 
+## Releases
 
-# Usage
+* __v1:__ [Static Version JQuery JS Python Flask App No Storage](https://github.com/johncoleman83/todo-list/releases/tag/v1)
+
+  ### usage static
 ```
 $ ./app.py
 ```
 
-# License
+* __v2:__ 
+
+## License
+
 MIT License
