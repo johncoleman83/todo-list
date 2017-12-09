@@ -2,6 +2,7 @@
 """
 Flask App for Todo List MVP
 """
+from datetime import datetime
 from flask import abort, Flask, jsonify
 from flask import render_template, request, url_for
 import json
@@ -22,8 +23,10 @@ def api_response(state, message, code):
     """
     Method to handle errors with api
     """
-    response = { state: message, "status_code": code }
-    resp_json = jsonify(message)
+    time = str(datetime.utcnow())[11:19]
+    data = "{} {}".format(message, time)
+    response = { state: data, "status_code": code }
+    resp_json = jsonify(response)
     return resp_json
 
 @app.teardown_appcontext
@@ -59,10 +62,10 @@ def api_get_handler(fbid=None):
     handles api get requests
     """
     if fbid is None:
-        return api_response("error", "Unknown id", 401)
+        return api_response("error", "Unknown id, please save a todo task", 401)
     verified_user = storage.get_user_by_fbid(fbid)
     if verified_user is None:
-        return api_response("error", "Unknown id", 401)
+        return api_response("error", "Unknown id, please save a todo task", 401)
     all_tasks = make_todo_list(verified_user)
     return jsonify(all_tasks), 201
 
@@ -103,7 +106,7 @@ def update_user_tasks(verified_user, all_tasks):
             key = "{}.{}".format("Task", task_id)
             value = task_to_delete.get(key)
             value.delete()
-    return "new tasks updated & created"
+    return "tasks updated"
 
 def verify_proper_post_request(req_data):
     """

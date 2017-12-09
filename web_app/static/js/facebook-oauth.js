@@ -98,15 +98,33 @@ function getRequestLoadTodoList () {
     contentType: 'application/json; charset=utf-8',
     dataType: 'json',
     success: function (data) {
-      if (data != "Unknown id") {
+      let newData
+      if (data['error'] == undefined) {
 	for (let key in data) {
 	  if (!data.hasOwnProperty(key)) { continue; }
 	  allTasks[key] = data[key];
 	}
+	$('#save-message').text('');
+	newData = [
+	  '<div class="left">',
+	  '<i class="fa fa-tasks" aria-hidden="true"></i>',
+	  '  Tasks Loaded!</div>'
+	]
+	$('#save-message').append(newData.join(''))
 	todoApp.renderAllTasks();
+      } else {
+	$('#save-message').text('');
+	let message = data['error']
+	newData = [
+	  '<div class="left">',
+	  '<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>',
+	  message + '</div>'
+	]
+	$('#save-message').append(newData.join(''))
       }
     },
     error: function (data) {
+      console.log(data);
     }
   });
 }
@@ -180,16 +198,17 @@ function checkFacebookStatus () {
  * saves Todo list on backend if authenticated
  */
 function postRequestSaveTodoList () {
+  let newData
   if (typeof rJSON['userInfo']['name'] == 'undefined' ||
       typeof rJSON['userInfo']['fbid'] == 'undefined' ||
       typeof rJSON['userInfo'] ['email'] == 'undefined') {
     $('#save-message').text('');
-    let newData = [
+    newData = [
       '<div class="left">',
       '<i class="fa fa-exclamation-triangle left" aria-hidden="true"></i>',
       ' you must authenticate to save!</div>'
     ]
-    $('#save-message').append(newData.join(''))
+    $('#save-message').append(newData.join(''));
   } else {
     rJSON['allTasks'] = allTasks;
     $.ajax({
@@ -199,24 +218,29 @@ function postRequestSaveTodoList () {
       contentType: 'application/json; charset=utf-8',
       dataType: 'json',
       success: function (data) {
-	$('#save-message').text('');
-	let newData = [
-	  '<div class="left">',
-	  '<i class="fa fa-telegram" aria-hidden="true"></i>',
-	  ' ' + JSON.stringify(data) + '</div>'
-	]
-	$('#save-message').append(newData.join(''))
+	let message;
+	if (data['error'] == undefined) {
+	  message = data['success'];
+	  $('#save-message').text('');
+	  newData = [
+	    '<div class="left">',
+	    '<i class="fa fa-telegram" aria-hidden="true"></i>',
+	    ' ' + message + '</div>'
+	  ]
+	  $('#save-message').append(newData.join(''));
+	} else {
+	  message = data['error'];
+	  $('#save-message').text('');
+	  newData = [
+	    '<div class="left">',
+	    '<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>',
+	    message + '</div>'
+	  ]
+	  $('#save-message').append(newData.join(''));
+	}
       },
       error: function (data) {
-	$('#save-message').text('');
-	let newData = [
-	  '<div class="left">',
-	  '<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>',
-	  ' error saving! <br>',
-	  JSON.stringify(data),
-	  '</div>'
-	]
-	$('#save-message').append(newData.join(''))
+	console.log(data);
       }
     });
   }
