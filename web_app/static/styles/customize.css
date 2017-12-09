@@ -68,3 +68,7 @@ main {
 #save-message {
     margin-left: 15px;
 }
+
+.todo-list-container {
+    margin: 0 15px;
+}
