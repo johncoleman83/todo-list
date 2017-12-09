@@ -11,7 +11,10 @@ var rJSON = {
   }
 }
 
-// FB API initializer
+/**
+ * fbAsyncInit
+ * Facebook API Initializer
+ */
 window.fbAsyncInit = function () {
   FB.init({
     appId: '131891487494882',
@@ -24,7 +27,6 @@ window.fbAsyncInit = function () {
   $(document).trigger('fbload');
 };
 
-// Load the SDK asynchronously
 (function (d) {
   var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
   if (d.getElementById(id)) { return; }
@@ -33,6 +35,10 @@ window.fbAsyncInit = function () {
   ref.parentNode.insertBefore(js, ref);
 }(document));
 
+/**
+ * Login
+ * handles Facebook API for Login
+ */
 function Login () {
   FB.login(function (response) {
     if (response.authResponse) {
@@ -43,6 +49,14 @@ function Login () {
   }, {scope: 'email,user_likes,user_videos'});
 }
 
+/**
+ * buildFBHTML
+ * creates the Facebook header and login sections with custom data
+ * @userName {String} the users name
+ * @userId {String} the users facebook ID
+ * @userEmail {String} the users email from FB
+ * @imgHTML {String} the users image link
+ */
 function buildFBHTML (userName, userId, userEmail, imgHTML) {
   let userBar = [
     '<b>id:</b> ' + userId + '<br><b>email:</b> ' + userEmail,
@@ -57,15 +71,26 @@ function buildFBHTML (userName, userId, userEmail, imgHTML) {
   $('#status').append(userBar.join(''));
 }
 
-function buildFBError(cod, message) {
+/**
+ * buildFBError
+ * renders error if there is one
+ * @code {Int} the error code
+ * @message {String} the error message
+ */
+function buildFBError(code, message) {
+  $('#status').text('');
   let userBar = [
     '<strong>ERROR login failure</strong><br>',
     '<strong>' + code + '</strong><br>',
     '<p>' + message + '</p>'
   ];
-  document.getElementById('status').innerHTML = userBar.join('');
+  $('#status').append(userBar.join(''));
 }
 
+/**
+ * getRequestLoadTodoList
+ * makes get request to backend to check for user data
+ */
 function getRequestLoadTodoList () {
   $.ajax({
     url: domain + '/' + rJSON['userInfo']['fbid'],
@@ -86,6 +111,10 @@ function getRequestLoadTodoList () {
   });
 }
 
+/**
+ * getUserInfo
+ * makes Facebook API request to get all user information
+ */
 function getUserInfo () {
   FB.api('/me?fields=name,email,id', function (response) {
     if (response.error == undefined) {
@@ -109,10 +138,18 @@ function getUserInfo () {
   });
 }
 
+/**
+ * Logout
+ * calls Facebook API for logout
+ */
 function Logout () {
   FB.logout(function () { document.location.reload(); });
 }
 
+/**
+ * checkFacebookStatus
+ * checks user Facebook login/ authentication status
+ */
 function checkFacebookStatus () {
   $('#save-message').text('');
 
@@ -138,6 +175,10 @@ function checkFacebookStatus () {
   });
 }
 
+/**
+ * postRequestSaveTodoList
+ * saves Todo list on backend if authenticated
+ */
 function postRequestSaveTodoList () {
   if (typeof rJSON['userInfo']['name'] == 'undefined' ||
       typeof rJSON['userInfo']['fbid'] == 'undefined' ||
