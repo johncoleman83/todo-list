@@ -34,11 +34,18 @@ This is a basic todo app demonstrating some of my full stack skills
 * __v1:__ [Static Version JQuery JS Python Flask App No Storage](https://github.com/johncoleman83/todo-list/releases/tag/v1)
 
   ### usage static
+
 ```
 $ ./app.py
 ```
 
-* __v2:__ 
+* __v2:__ [Facebook OAuth with MySQL DB Storage Engine](https://github.com/johncoleman83/todo-list/releases/tag/v2)
+
+  ### usage OAuth DB storage
+
+```
+$ python3 -m web_app.app
+```
 
 ## License
 
