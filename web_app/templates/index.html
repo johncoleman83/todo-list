@@ -23,7 +23,13 @@
   </head>
   <body class="grey lighten-4">
     <header id="header" class="container">
-      <h4 id="header-theme" class="left-align"><i>todo:</i></h4>
+      <div class="row">
+	<div id="header-img-name" class="col l6 m6 s12 left-align">
+	  <h4 id="header-theme" class="left-align"><i>todo:</i></h4>
+	</div>
+	<div id="header-id-email" class="col l6 m6 s12 right-align">
+	</div>
+      </div>
     </header>
     <main>
       <div class="container">
@@ -66,13 +72,13 @@
 		    <option value="0">none</option>
 		    <option value="1"
 			    data-icon="static/images/black-circle.png"
-			    class="red lighten-1 left-align circle">red</option>
+			    class="red lighten-1 left circle">red</option>
 		    <option value="2"
 			    data-icon="static/images/black-circle.png"
-			    class="orange lighten-1 left-align circle">orange</option>
+			    class="orange lighten-1 left circle">orange</option>
 		    <option value="3"
 			    data-icon="static/images/black-circle.png"
-			    class="blue lighten-2 left-align circle">blue</option>
+			    class="blue lighten-2 left circle">blue</option>
 		  </select>
 		  <label>Color</label>
  		</div>
@@ -107,7 +113,7 @@
       <div id="facebook-container" class="container grey lighten-2">
 	<div class="hoverable center-align">
 	  <div class="row">
-	    <h4>save todo list</h4>
+	    <!--h4>save todo list</h4-->
 	    <div id="status">
 	      Please Authenticate with Facebook to save todo list<br/>
 	      <a class="btn waves-effect waves-light btn-large blue darken-1"

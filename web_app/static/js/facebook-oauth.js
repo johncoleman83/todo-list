@@ -59,16 +59,24 @@ function Login () {
  */
 function buildFBHTML (userName, userId, userEmail, imgHTML) {
   let userBar = [
-    '<b>id:</b> ' + userId + '<br><b>email:</b> ' + userEmail,
-    '<br><input class="btn blue darken-1" type="button" value="Logout" onclick="Logout();"/>'
+    '<br><input class="btn blue darken-1" ',
+    'type="button" value="Logout" onclick="Logout();"/>'
   ];
-  let headerTheme = [
+  let headerImgName = [
     imgHTML, '<h4 id="header-theme"><i>' + userName + '</i></h4>'
   ]
-  $('header').text((''));
-  $('#status').text((''));
-  $('header').append(headerTheme.join(''));
-  $('#status').append(userBar.join(''));
+  let headerIdEmail = [
+    '<b>id:</b> ' + userId + '<br><b>email:</b> ' + userEmail
+  ]
+  let imgName = $('#header-img-name');
+  let idEmail = $('#header-id-email');
+  let status = $('#status');
+  imgName.text('');
+  idEmail.text('')
+  status.text('');
+  imgName.append(headerImgName.join(''));
+  idEmail.append(headerIdEmail.join(''));
+  status.append(userBar.join(''));
 }
 
 /**

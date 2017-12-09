@@ -3,7 +3,6 @@
  * -- TODO STYLES
  */
 body {
-    margin-top: 40px;
     display: flex;
     min-height: 100vh;
     flex-direction: column;
