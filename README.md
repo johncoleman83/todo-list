@@ -1,7 +1,9 @@
 # Todo List
+
 simple todo list
 
 ## Demo
+
 https://cecinestpasun.site/todo (coming soon!)
 
 ## Description
@@ -45,6 +47,22 @@ $ ./app.py
 
 ```
 $ python3 -m web_app.app
+```
+
+## Development
+
+#### Setup Docker
+
+```
+$ docker pull mysql:latest
+$ docker run --name todo-mysql -e MYSQL_ROOT_PASSWORD=root -d mysql:latest
+$ export MYSQL_CONTAINER=$(docker ps -aq --filter name=todo-mysql)
+$ docker cp dev/todo-db-init.sql $MYSQL_CONTAINER:/home/todo-db-init.sql
+$ docker exec $MYSQL_CONTAINER ls -la /home
+$ docker exec $MYSQL_CONTAINER cat /home/todo-db-init.sql | mysql -h172.17.0.2 -uroot -p
+$ docker run -it --link todo-mysql:mysql --rm mysql sh -c \
+  'exec mysql -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" \
+  -uroot -p"$MYSQL_ENV_MYSQL_ROOT_PASSWORD"'
 ```
 
 ## License

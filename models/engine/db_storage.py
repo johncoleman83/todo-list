@@ -25,7 +25,7 @@ class DBStorage:
         creates the engine self.__engine
         """
         self.__engine = create_engine(
-            'mysql+mysqldb://{}:{}@{}:3306/{}'
+            'mysql+pymysql://{}:{}@{}:3306/{}'
             .format(USER, PW, HOST, DB)
         )
 
