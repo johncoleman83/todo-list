@@ -49,7 +49,7 @@ This is a basic todo app demonstrating some of my full stack skills
 $ ./app.py
 ```
 
-* __v2:__ [Facebook OAuth with Docker MySQL DB Storage Engine](https://github.com/johncoleman83/todo-list/releases/tag/v2)
+* __v2:__ [Facebook OAuth - MySQL DB Storage Engine - Docker](https://github.com/johncoleman83/todo-list/releases/tag/v2)
 
 ### usage OAuth & Docker DB storage
 
