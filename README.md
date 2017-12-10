@@ -58,16 +58,18 @@ $ ./app.py
 ### usage OAuth & Docker DB storage
 
 1. setup Docker
+  * instructions below
+  * Facebook Application settings need to be configured with localhost
 
 2.  Configure ENV Variables (Optional)
 
-* `APP_HOST`
-* `APP_PORT`
-* `TODO_KEY`
-* `TODO_USER`
-* `TODO_PWD`
-* `TODO_DB_HOST`
-* `TODO_MYSQL_DB`
+  * `APP_HOST`
+  * `APP_PORT`
+  * `TODO_KEY`
+  * `TODO_USER`
+  * `TODO_PWD`
+  * `TODO_DB_HOST`
+  * `TODO_MYSQL_DB`
 
 3. execute todo app backend app server
 
