@@ -26,7 +26,7 @@ class DBStorage:
         creates the engine self.__engine
         """
         if TODO_PWD != '':
-            PWD = "{}{}".format(":", PW)
+            PWD = "{}{}".format(":", TODO_PWD)
         else:
             PWD = TODO_PWD
         self.__engine = create_engine(
