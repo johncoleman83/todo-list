@@ -1,0 +1,20 @@
+# systemd config file
+# reload daemon: $ sudo systemctl daemon-reload
+# start service: $ sudo systemctl start todoapp.service
+
+[Unit]
+Description=gunicorn application server running todo application
+
+[Service]
+User=ubuntu
+Group=www-data
+WorkingDirectory=/home/ubuntu/github.com/johncoleman83/todo-list
+ExecStart=/usr/local/bin/gunicorn --bind 127.0.0.1:8003 wsgi.wsgi_todo:todo.app
+TimeoutSec=30
+Restart=on-failure
+RestartSec=30
+StartLimitInterval=350
+StartLimitBurst=10
+
+[Install]
+WantedBy=multi-user.target
