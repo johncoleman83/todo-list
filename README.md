@@ -110,6 +110,10 @@ $ docker exec $MYSQL_CONTAINER echo 'SHOW DATABASES;' | mysql -h172.17.0.2 -uroo
 $ docker exec $MYSQL_CONTAINER echo 'SHOW DATABASES;' | mysql -h0.0.0.0 -uroot
 ```
 
+## Terms of use and Privacy Statement
+
+https://github.com/johncoleman83/todo-list/blob/master/PRIVACY_STATEMENT.md
+
 ## License
 
 MIT License

@@ -1,0 +1,6 @@
+# gunicorn configuration for Nautilus web app
+location /todo/ {
+	 include proxy_params;
+	 rewrite ^/todo/(.*)$ /$1 break;
+	 proxy_pass http://127.0.0.1:8003;
+}

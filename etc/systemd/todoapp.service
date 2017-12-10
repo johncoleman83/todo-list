@@ -16,6 +16,12 @@ Restart=on-failure
 RestartSec=30
 StartLimitInterval=350
 StartLimitBurst=10
+Environment=APP_HOST=localhost
+Environment=APP_PORT=8003
+Environment=TODO_PWD=***************
+Environment=TODO_DB_HOST=localhost
+Environment=TODO_MYSQL_DB=todo_dev_db
+Environment=TODO_USER=todo_dev
 
 [Install]
 WantedBy=multi-user.target

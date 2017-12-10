@@ -1,5 +1,5 @@
 const localhost = "http://localhost:5001/api";
-const remotehost = "https://cecinestpasun.site/api";
+const remotehost = "https://cecinestpasun.site/todo/api";
 const domain = localhost;
 
 var rJSON = {
