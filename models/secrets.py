@@ -9,8 +9,12 @@ import sys
 KEY = os.getenv('TODO_KEY', '1OWU3m77xWS5r_CfcQ63mRlyQDvR3VEfud4Img8psVE=')
 TODO_KEY = KEY.encode('utf-8')
 CIPHER = Fernet(KEY)
+
 TODO_USER = os.getenv('TODO_USER', 'root')
+# prod os.getenv('TODO_USER', 'todo_dev')
 TODO_PWD = os.getenv('TODO_DB_PWD', '')
+# prod os.getenv('TODO_DB_PWD', '***************')
+
 TODO_DB_HOST = os.getenv('TODO_DB_HOST', None)
 if TODO_DB_HOST is None:
     print("Usage:", file=sys.stderr)

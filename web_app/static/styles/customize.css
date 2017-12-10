@@ -72,3 +72,7 @@ main {
 .todo-list-container {
     margin: 0 15px;
 }
+
+footer a {
+    padding: 0 10px;
+}
