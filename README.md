@@ -67,19 +67,18 @@ $ ./app.py
 
 3. execute todo app backend app server
 
-```
-$ python3 -m web_app.app
-```
-
-## Setup Docker
-
-### __Automatic Docker Dev DB Setup:__
+* Linux
 
 ```
-$ ./init-docker-mysql-db-container.bash
+$ TODO_DB_HOST=172.17.0.2 python3 -m web_app.app
 ```
 
-### __Manual Docker Dev DB Setup:__
+* Mac OS
+
+```
+$ TODO_DB_HOST=0.0.0.0 python3 -m web_app.app
+```
+## Setup Docker development database
 
 * pull latest docker mysql image from docker hub
 
@@ -90,28 +89,25 @@ $ docker pull mysql:latest
 * start todo-mysql container
 
 ```
-$ docker run --name todo-mysql -e MYSQL_ALLOW_EMPTY_PASSWORD=yes -d mysql:latest
-$ export MYSQL_CONTAINER=$(docker ps -aq --filter name=todo-mysql)
+$ docker run --name todo-mysql --detach --env MYSQL_ALLOW_EMPTY_PASSWORD='yes' \
+	--env MYSQL_DATABASE='todo_dev_db' --publish 3306:3306 mysql:latest
 ```
 
-* wait 7 seconds to make sure the container and mysql is ready
+* __Note:__
 
-```
-$ docker exec $MYSQL_CONTAINER echo "DROP DATABASE IF EXISTS todo_dev_db;" \
-  | mysql -h172.17.0.2 -uroot
-```
+  * *wait 7 seconds to make sure the container and mysql is ready*
+  * *the next 2 commands require mysql server to be installed to execute them*
 
-* create new db
-
-```
-$ docker exec "$MYSQL_CONTAINER" echo "CREATE DATABASE IF NOT EXISTS todo_dev_db;" \
-  | mysql -h172.17.0.2 -uroot
-```
-
-* verify DB created
+* verify database exists (Linux)
 
 ```
 $ docker exec $MYSQL_CONTAINER echo 'SHOW DATABASES;' | mysql -h172.17.0.2 -uroot
+```
+
+* verify database exists (mac OS)
+
+```
+$ docker exec $MYSQL_CONTAINER echo 'SHOW DATABASES;' | mysql -h0.0.0.0 -uroot
 ```
 
 ## License
