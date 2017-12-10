@@ -15,6 +15,7 @@ from uuid import uuid4, UUID
 # Creates instance of Base if storage type is a database
 Base = declarative_base()
 
+
 class BaseModel:
     """
     attributes and functions for BaseModel class

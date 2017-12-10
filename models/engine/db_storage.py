@@ -7,7 +7,8 @@ from sqlalchemy.orm import sessionmaker, scoped_session
 from models.base_model import Base
 from models import base_model, task
 from models.user import User
-from models.secrets import USER, PW, HOST, DB
+from models.secrets import TODO_USER, TODO_PWD, TODO_DB_HOST, TODO_MYSQL_DB
+
 
 class DBStorage:
     """
@@ -24,9 +25,13 @@ class DBStorage:
         """
         creates the engine self.__engine
         """
+        if TODO_PWD != '':
+            PWD = "{}{}".format(":", PW)
+        else:
+            PWD = TODO_PWD
         self.__engine = create_engine(
-            'mysql+pymysql://{}:{}@{}:3306/{}'
-            .format(USER, PW, HOST, DB)
+            'mysql+pymysql://{}{}@{}:3306/{}'
+            .format(TODO_USER, PWD, TODO_DB_HOST, TODO_MYSQL_DB)
         )
 
     def verify_tables(self, cls):

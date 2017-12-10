@@ -6,7 +6,7 @@ from datetime import datetime
 from flask import abort, Flask, jsonify
 from flask import render_template, request, url_for
 import json
-from models import storage, Task, User, REQUIRED, PORT, HOST
+from models import storage, Task, User, REQUIRED, APP_PORT, APP_HOST
 import requests
 from uuid import uuid4
 
@@ -16,8 +16,10 @@ app = Flask(__name__)
 app.url_map.strict_slashes = False
 ERRORS = [
     "Not a JSON", "Missing required information", "Missing id",
-    "Wrong id type", "Missing required user information"
+    "Wrong id type", "Missing required user information",
+    "Unknown id, please save a todo task"
 ]
+
 
 def api_response(state, message, code):
     """
@@ -25,9 +27,10 @@ def api_response(state, message, code):
     """
     time = str(datetime.utcnow())[11:19]
     data = "{} {}".format(message, time)
-    response = { state: data, "status_code": code }
+    response = {state: data, "status_code": code}
     resp_json = jsonify(response)
     return resp_json
+
 
 @app.teardown_appcontext
 def teardown_db(exception):
@@ -37,6 +40,7 @@ def teardown_db(exception):
     """
     storage.close()
 
+
 @app.route('/', methods=['GET'])
 def main_index():
     """
@@ -45,6 +49,7 @@ def main_index():
     if request.method == 'GET':
         cache_id = uuid4()
         return render_template('index.html', cache_id=cache_id)
+
 
 def make_todo_list(verified_user):
     """
@@ -62,12 +67,13 @@ def api_get_handler(fbid=None):
     handles api get requests
     """
     if fbid is None:
-        return api_response("error", "Unknown id, please save a todo task", 401)
+        return api_response("error", ERRORS[5], 401)
     verified_user = storage.get_user_by_fbid(fbid)
     if verified_user is None:
-        return api_response("error", "Unknown id, please save a todo task", 401)
+        return api_response("error", ERRORS[5], 401)
     all_tasks = make_todo_list(verified_user)
     return jsonify(all_tasks), 201
+
 
 def initialize_new_task_list(user_info, all_tasks):
     """
@@ -81,6 +87,7 @@ def initialize_new_task_list(user_info, all_tasks):
         new_task = Task(**task)
         new_task.save()
     return "new user and tasks created"
+
 
 def update_user_tasks(verified_user, all_tasks):
     """
@@ -107,6 +114,7 @@ def update_user_tasks(verified_user, all_tasks):
             value = task_to_delete.get(key)
             value.delete()
     return "tasks updated"
+
 
 def verify_proper_post_request(req_data):
     """
@@ -140,10 +148,10 @@ def api_post_handler():
     user_info = req_data.get('userInfo', None)
     all_tasks = req_data.get('allTasks', None)
     if user_info is None or all_tasks is None:
-        return api_response("error", "Missing required information", 400)
+        return api_response("error", ERRORS[1], 400)
     for req in REQUIRED:
         if req not in user_info:
-            return api_response("error", "Missing attribute", 400)
+            return api_response("error", ERRORS[1], 400)
     verified_user = storage.get_user_by_fbid(verification)
     if verified_user is None:
         message = initialize_new_task_list(user_info, all_tasks)
@@ -151,6 +159,7 @@ def api_post_handler():
     else:
         message = update_user_tasks(verified_user, all_tasks)
         return api_response("success", message, 200)
+
 
 @app.errorhandler(404)
 def page_not_found(error):
@@ -162,4 +171,4 @@ if __name__ == "__main__":
     """
     MAIN Flask App
     """
-    app.run(host=HOST, port=PORT)
+    app.run(host=APP_HOST, port=APP_PORT)
