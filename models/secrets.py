@@ -17,5 +17,5 @@ if TODO_DB_HOST is None:
     print("$ TODO_DB_HOST=[YOUR IP ADDRESS] python3 -m web_app.app",
           file=sys.stderr)
     print("Please specify the env variable TODO_DB_HOST", file=sys.stderr)
-    exit 1
+    sys.exit(1)
 TODO_MYSQL_DB = os.getenv('TODO_MYSQL_DB', 'todo_dev_db')
