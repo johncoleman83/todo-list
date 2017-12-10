@@ -1,10 +1,14 @@
 # Todo List
 
-simple todo list
+simple todo list with JS frontend, facebook OAuth, mysql storage, docker
 
 ## Demo
 
-https://cecinestpasun.site/todo (coming soon!)
+https://cecinestpasun.site/todo
+
+## Screen Shot
+
+<img src="https://raw.githubusercontent.com/johncoleman83/todo-list/master/screen-shot.png" width="612" height=auto />
 
 ## Description
 
