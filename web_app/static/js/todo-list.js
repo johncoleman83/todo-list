@@ -1,9 +1,8 @@
-const dateLabels = ['Deadline', 'Start Time', 'Appointment'];
-const jsonColors = ['red', 'orange', 'blue'];
-const injections = [/"/g, /'/g, /</g, />/g]
-var googleEventToggled = false;
+const DATELABELS = ['Deadline', 'Start Time', 'Appointment'];
+const JSONCOLORS = ['red', 'orange', 'blue'];
+const INJECTIONS = [/"/g, /'/g, /</g, />/g]
+const googleEventToggled = false;
 const allTasks = {}
-var todoApp
 
 /**
  * setDateTimes
@@ -52,7 +51,7 @@ function uuidv4() {
  * @sleepDuration {int} sleep duration in seconds
  */
 function sleepFor (sleepDuration) {
-  var now = new Date().getTime();
+  let now = new Date().getTime();
   while (new Date().getTime() < now + sleepDuration) { /* do nothing */ }
 }
 
@@ -63,7 +62,7 @@ function sleepFor (sleepDuration) {
  * @return {String} updated text
  */
 function removeInjections(text) {
-  for (let i in injections) {
+  for (let i in INJECTIONS) {
     text = text.replace(i, '');
   }
   return text;
@@ -107,8 +106,8 @@ function createTaskObject (newId, color, dateLabel, date, time, text) {
   let todoTaskObj = {};
   todoTaskObj['id'] = newId;
   todoTaskObj['labelClass'] = 'title';
-  if (color > 0) { todoTaskObj['color'] = jsonColors[color - 1]; }
-  if (dateLabel > 0) { todoTaskObj['dateLabel'] = dateLabels[dateLabel - 1]; }
+  if (color > 0) { todoTaskObj['color'] = JSONCOLORS[color - 1]; }
+  if (dateLabel > 0) { todoTaskObj['dateLabel'] = DATELABELS[dateLabel - 1]; }
   if (date) { todoTaskObj['date'] = date; }
   if (time) { todoTaskObj['time'] = time; }
   text = removeInjections(text);
@@ -140,49 +139,34 @@ function getHtmlColor (color) {
 }
 
 /**
- * todoAppClass
+ * todoListApp
  * main settings for TODO list functionality
- * return {todoAppClass} instance
+ * return {todoListApp} instance
  */
-function todoAppClass () {
-  var self = this;
-  var id = uuidv4();
-  var btnAdd = $('#btnAdd');
-  var newTaskListItem = $('#newTaskListItem');
-  var inputNewTask = $('#inputNewTask');
-  var inputTaskDate = $('#inputTaskDate');
-  var inputTaskTime = $('#inputTaskTime');
-  var inputDateLabel = $('#inputDateLabel');
-  var inputColor = $('#inputColor');
-  var cbCheckAll = $('#cbCheckAll');
-  var btnDelDone = $('#btnDelDone');
-
-  if (!(self instanceof todoAppClass)) {
-    return new todoAppClass();
-  }
+class todoListApp {
 
   /**
-   * init
-   * initializes on click functions
+   * constructor
+   * init function to intialize class
    */
-  self.init = function () {
-    btnAdd.on('click', self.addTask);
-    cbCheckAll.on('click', self.onCheckAll);
-    btnDelDone.on('click', self.delDone);
-    inputNewTask.on('keyup', self.onNewTaskKeyUp);
-    inputNewTask.focus();
-  };
+  constructor () {
+    $('#btnAdd').on('click', todoListApp.addTask);
+    $('#cbCheckAll').on('click', todoListApp.onCheckAll);
+    $('#btnDelDone').on('click', todoListApp.delDone);
+    $('#inputNewTask').on('keyup', todoListApp.onNewTaskKeyUp);
+    $('#inputNewTask').focus();
+  }
 
   /**
    * resetAddTaskValues
    * resets all the input task states
    */
-  self.resetAddTaskValues = function () {
-    inputNewTask.val('');
-    inputTaskDate.val('');
-    inputTaskTime.val('');
-    inputDateLabel.val('0');
-    inputColor.val('0');
+  static resetAddTaskValues() {
+    $('#inputNewTask').val('');
+    $('#inputTaskDate').val('');
+    $('#inputTaskTime').val('');
+    $('#inputDateLabel').val('0');
+    $('#inputColor').val('0');
     $('select').material_select();
   };
 
@@ -192,7 +176,7 @@ function todoAppClass () {
    * @taskId {String} the object ID
    * return {String} HTML formatted section of task
    */
-  self.taskObjToHtml = function (taskId) {
+  static taskObjToHtml(taskId) {
     let todoTaskObj = allTasks[taskId];
     let htmlModal = [];
     if (todoTaskObj['color']) { htmlModal.push(getHtmlColor(todoTaskObj['color'])); }
@@ -227,33 +211,33 @@ function todoAppClass () {
    * builds task HTML and appends it to the task list
    * @taskId {String} the object ID
    */
-  self.buildTaskAppendToList = function (taskId) {
+  static buildTaskAppendToList(taskId) {
     let newTask = $(
       '<li class="collection-item" data-id="' + taskId + '"></li>'
     );
-    let htmlModal = self.taskObjToHtml(taskId);
-    labelClass = allTasks[taskId]['labelClass'];
-    var checkBoxObj = $([
+    let htmlModal = todoListApp.taskObjToHtml(taskId);
+    let labelClass = allTasks[taskId]['labelClass'];
+    let checkBoxObj = $([
       '<input id="cb-' + taskId + '" type="checkbox" name="' + taskId,
       '" value=""><label id="' + taskId + '" for="cb-' + taskId + '" class="',
       labelClass + '">' + htmlModal + '</label>'
     ].join(''));
 
-    checkBoxObj.on('click', self.clickCheckBox);
-    checkBoxObj.on('dblclick', self.editTask);
-    var btnDel = $(
+    checkBoxObj.on('click', todoListApp.clickCheckBox);
+    checkBoxObj.on('dblclick', todoListApp.editTask);
+    let btnDel = $(
       '<a href="" class="secondary-content-trash task-editions">' +
 	'<i class="fa fa-trash-o" aria-hidden="true"></i></a>'
     );
-    var btnEdit = $(
+    let btnEdit = $(
       '<a href="" id="' + taskId
 	+ '" class="secondary-content-edit task-editions">' +
 	'<i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>'
     );
-    btnDel.on('click', self.deleteTask);
+    btnDel.on('click', todoListApp.deleteTask);
     btnEdit.on('click', function (e) {
       e.preventDefault();
-      var event = new MouseEvent('dblclick', {
+      let event = new MouseEvent('dblclick', {
         'view': window,
         'bubbles': true,
         'cancelable': true
@@ -263,7 +247,7 @@ function todoAppClass () {
     newTask.append(btnEdit);
     newTask.append(btnDel);
     newTask.append(checkBoxObj);
-    newTaskListItem.before(newTask);
+    $('#newTaskListItem').before(newTask);
     $('.google-event').on('click', function (e) {
       googleEventToggled = true;
     });
@@ -274,25 +258,25 @@ function todoAppClass () {
    * handles adding a new task based on input values
    * @e {Object} clicked element from DOM
    */
-  self.addTask = function (e) {
-    var newId = uuidv4();
-    var text = $.trim(inputNewTask.val());
+  static addTask(e) {
+    let newId = uuidv4();
+    let text = $.trim($('#inputNewTask').val());
 
     if (text) {
-      let color = parseInt(inputColor.val());
-      let dateLabel = parseInt(inputDateLabel.val());
-      let date = $.trim(inputTaskDate.val());
-      let time = $.trim(inputTaskTime.val());
-      var newTask = $(
+      let color = parseInt($('#inputColor').val());
+      let dateLabel = parseInt($('#inputDateLabel').val());
+      let date = $.trim($('#inputTaskDate').val());
+      let time = $.trim($('#inputTaskTime').val());
+      let newTask = $(
 	'<li class="collection-item" data-id="' + newId + '"></li>'
       );
 
       createTaskObject(newId, color, dateLabel, date, time, text)
-      self.buildTaskAppendToList(newId)
-      self.resetAddTaskValues()
+      todoListApp.buildTaskAppendToList(newId)
+      todoListApp.resetAddTaskValues()
     }
-    btnAdd.addClass('disabled');
-    inputNewTask.focus();
+    $('#btnAdd').addClass('disabled');
+    $('#inputNewTask').focus();
   };
 
   /**
@@ -300,17 +284,17 @@ function todoAppClass () {
    * handles add task button logic and task input on carriage return
    * @e {Object} the element clicked from DOM
    */
-  self.onNewTaskKeyUp = function (e) {
+  static onNewTaskKeyUp(e) {
     if (e.keyCode === 13) {
-      self.addTask(e);
+      todoListApp.addTask(e);
       return;
     }
-    var text = $.trim(inputNewTask.val());
-    var disabled = btnAdd.hasClass('disabled');
+    let text = $.trim($('#inputNewTask').val());
+    let disabled = $('#btnAdd').hasClass('disabled');
     if (text && disabled) {
-      btnAdd.removeClass('disabled');
+      $('#btnAdd').removeClass('disabled');
     } else if (!text && !disabled) {
-      btnAdd.addClass('disabled');
+      $('#btnAdd').addClass('disabled');
     }
   };
 
@@ -319,9 +303,9 @@ function todoAppClass () {
    * deletes task from storage and document
    * @e {Object} the element clicked from DOM
    */
-  self.deleteTask = function (e) {
+  static deleteTask(e) {
     e.preventDefault();
-    var taskId = $(e.currentTarget).parent().attr('data-id');
+    let taskId = $(e.currentTarget).parent().attr('data-id');
     $('[data-id="' + taskId + '"]').remove();
     delete allTasks[taskId];
   };
@@ -332,28 +316,28 @@ function todoAppClass () {
    * @e {Object} the clicked element from DOM
    * return {String} HTML formatted section of task
    */
-  self.editTask = function (e) {
-    var label = $(e.currentTarget);
-    var text = label.text();
-    var taskId = label.attr('id');
-    var taskEdit = $(
+  static editTask(e) {
+    let label = $(e.currentTarget);
+    let text = label.text();
+    let taskId = label.attr('id');
+    let taskEdit = $(
       '<input type="text" name="taskEdit" value="' + allTasks[taskId]['text'] +
 	'" placeholder="" id="taskEdit">'
     );
-    var editEnd = function () {
-      let htmlModal = self.taskObjToHtml(taskId);
+    let editEnd = function () {
+      let htmlModal = todoListApp.taskObjToHtml(taskId);
       label.text('');
       label.append(htmlModal);
       taskEdit.replaceWith(label);
-      label.on('click', self.clickCheckBox);
-      label.on('dblclick', self.editTask);
+      label.on('click', todoListApp.clickCheckBox);
+      label.on('dblclick', todoListApp.editTask);
       };
     label.replaceWith(taskEdit);
     taskEdit.on('blur', editEnd);
     taskEdit.on('keyup', function (e) {
       switch (e.keyCode) {
       case 13:
-        var newText = $.trim(taskEdit.val());
+        let newText = $.trim(taskEdit.val());
         if (newText) {
 	  updateTaskVal(taskId, 'text', newText)
         }
@@ -372,12 +356,12 @@ function todoAppClass () {
    * handles clicking a check box
    * @e {Object} the element clicked from DOM
    */
-  self.clickCheckBox = function (e) {
-    var label = $(e.currentTarget);
+  static clickCheckBox(e) {
+    let label = $(e.currentTarget);
     if (label.attr('id').slice(0, 2) == 'cb') { return; }
     if (googleEventToggled) { googleEventToggled = false; return; }
-    var checkBoxObj = label.prev();
-    var checked = checkBoxObj.prop('checked');
+    let checkBoxObj = label.prev();
+    let checked = checkBoxObj.prop('checked');
     if (checked) {
       label.removeClass('task-done');
       if (label.attr('id').slice(0, 2) != 'cb') {
@@ -395,9 +379,9 @@ function todoAppClass () {
    * setAllChecked
    * sets all taks to checked
    */
-  self.setAllChecked = function () {
+  static setAllChecked() {
     $('#todo-list li input[type="checkbox"]:not(:checked)').each(function (i, el) {
-      var element = $(el);
+      let element = $(el);
       element.prop('checked', true);
       element.next().addClass('task-done');
       updateTaskVal(element.attr('name'), 'labelClass', 'title task-done')
@@ -408,9 +392,9 @@ function todoAppClass () {
    * unCheckAll
    * sets all tasks to unchecked
    */
-  self.unCheckAll = function () {
+  static unCheckAll() {
     $('#todo-list li input[type="checkbox"]:checked').each(function (i, el) {
-      var element = $(el);
+      let element = $(el);
       element.prop('checked', false);
       element.next().removeClass('task-done');
       updateTaskVal(element.attr('name'), 'labelClass', 'title')
@@ -422,9 +406,9 @@ function todoAppClass () {
    * handles logic for check all button
    * @e {Object} the object element from DOM
    */
-  self.onCheckAll = function (e) {
-    var checked = cbCheckAll.prop('checked');
-    if (checked) { self.setAllChecked(); } else { self.unCheckAll(); }
+  static onCheckAll(e) {
+    let checked = $('#cbCheckAll').prop('checked');
+    if (checked) { todoListApp.setAllChecked(); } else { todoListApp.unCheckAll(); }
   };
 
   /**
@@ -432,34 +416,32 @@ function todoAppClass () {
    * deletes all checked tasks
    * @e {Object} element from DOM
    */
-  self.delDone = function (e) {
+  static delDone(e) {
     $('#todo-list li input[type="checkbox"]:checked').each(function (i, el) {
       delete allTasks[el.name];
       $(el).parent().remove();
     });
-    cbCheckAll.prop('checked', false);
+    $('#cbCheckAll').prop('checked', false);
   };
 
   /**
    * renderAllTasks
    * called from OAuth upon startup if tasks have been populated from backend
    */
-  self.renderAllTasks = function () {
+  static renderAllTasks() {
     for (let key in allTasks) {
       if (!allTasks.hasOwnProperty(key)) { continue; }
-      self.buildTaskAppendToList(key)
+      todoListApp.buildTaskAppendToList(key)
       if (allTasks[key]['labelClass'] == 'title task-done') {
-	element = $('#cb-' + key)
+	let element = $('#cb-' + key)
 	element.prop('checked', true);
       }
     }
   }
-  return self;
 }
 
 $(document).ready(function () {
-  todoApp = new todoAppClass();
-  todoApp.init();
+  const todoApp = new todoListApp();
   $('select').material_select();
   setDateTimes();
 });

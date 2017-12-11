@@ -2,7 +2,7 @@ const localhost = "http://localhost:5001/api";
 const remotehost = "https://cecinestpasun.site/todo/api";
 const domain = localhost;
 
-var rJSON = {
+const rJSON = {
   "allTasks": undefined,
   "userInfo": {
     "name": undefined,
@@ -59,7 +59,7 @@ function Login () {
  */
 function buildFBHTML (userName, userId, userEmail, imgHTML) {
   let userBar = [
-    '<br><input class="btn blue darken-1" ',
+    '<br><input class="btn waves-effect waves-light btn-large blue darken-1" ',
     'type="button" value="Logout" onclick="Logout();"/>'
   ];
   let headerImgName = [
@@ -119,7 +119,7 @@ function getRequestLoadTodoList () {
 	  '  Tasks Loaded!</div>'
 	]
 	$('#save-message').append(newData.join(''))
-	todoApp.renderAllTasks();
+	todoListApp.renderAllTasks();
       } else {
 	$('#save-message').text('');
 	let message = data['error']
