@@ -209,6 +209,9 @@ function postRequestSaveTodoList () {
 }
 
 $(document).ready(function () {
+  const todoApp = new todoListApp();
+  setDateTimes();
+  $('select').material_select();
   $(document).on('fbload', checkFacebookStatus);
   $('#saveTodoList').on('click', postRequestSaveTodoList );
 });

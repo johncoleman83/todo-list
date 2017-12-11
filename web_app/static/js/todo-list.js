@@ -439,9 +439,3 @@ class todoListApp {
     }
   }
 }
-
-$(document).ready(function () {
-  const todoApp = new todoListApp();
-  $('select').material_select();
-  setDateTimes();
-});

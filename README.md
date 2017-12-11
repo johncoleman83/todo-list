@@ -53,7 +53,16 @@ This is a basic todo app demonstrating some of my full stack skills
 $ ./app.py
 ```
 
-* __v2:__ [Facebook OAuth - MySQL DB Storage Engine - Docker](https://github.com/johncoleman83/todo-list/releases/tag/v2)
+* __v2:__ Facebook OAuth - MySQL DB Storage Engine - Docker
+
+This Release uses Facebooks OAuth for Authentication & MySQL database as a
+storage model for all user tasks. There is also setup instructions and
+configurations to use Docker database for development. __This is the current
+release.__
+
+```
+$ git clone "https://github.com/johncoleman83/todo-list.git"
+```
 
 ## usage OAuth & Docker DB storage
 
