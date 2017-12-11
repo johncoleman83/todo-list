@@ -95,7 +95,7 @@ CONTAINER ID   IMAGE         ...  ...  STATUS           PORTS                   
 $ docker exec [CONTAINER ID] echo 'SHOW DATABASES;' | mysql -h[LOCAL_IP] -uroot
 ```
 
-* __(2) Configure ENV Variables (Optional)*__
+* __(2) Configure ENV Variables (Optional)__
   * `APP_HOST`
   * `APP_PORT`
   * `TODO_KEY`
