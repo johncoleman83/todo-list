@@ -209,6 +209,11 @@ function postRequestSaveTodoList () {
 }
 
 $(document).ready(function () {
+  $(function  () {
+    $("ul.collection").sortable({
+      handle: 'i.icon-move'
+    });
+  });
   const todoApp = new todoListApp();
   setDateTimes();
   $('select').material_select();

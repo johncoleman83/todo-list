@@ -1,8 +1,8 @@
 const DATELABELS = ['Deadline', 'Start Time', 'Appointment'];
 const JSONCOLORS = ['red', 'orange', 'blue'];
 const INJECTIONS = [/"/g, /'/g, /</g, />/g]
-const googleEventToggled = false;
 const allTasks = {}
+var googleEventToggled = false;
 
 /**
  * setDateTimes
@@ -225,17 +225,20 @@ class todoListApp {
 
     checkBoxObj.on('click', todoListApp.clickCheckBox);
     checkBoxObj.on('dblclick', todoListApp.editTask);
-    let btnDel = $(
+    let iconDel = $(
       '<a href="" class="secondary-content-trash task-editions">' +
-	'<i class="fa fa-trash-o" aria-hidden="true"></i></a>'
+	'<i class="fa fa-trash-o fa-lg" aria-hidden="true"></i></a>'
     );
-    let btnEdit = $(
+    let iconDrag = $(
+      '<i class="fa fa-arrows icon-move task-editions fa-lg" aria-hidden="true"></i>'
+    );
+    let iconEdit = $(
       '<a href="" id="' + taskId
-	+ '" class="secondary-content-edit task-editions">' +
-	'<i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>'
+	+ '" class="task-editions">' +
+	'<i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i></a>'
     );
-    btnDel.on('click', todoListApp.deleteTask);
-    btnEdit.on('click', function (e) {
+    iconDel.on('click', todoListApp.deleteTask);
+    iconEdit.on('click', function (e) {
       e.preventDefault();
       let event = new MouseEvent('dblclick', {
         'view': window,
@@ -244,8 +247,9 @@ class todoListApp {
       });
       document.getElementById('taskTextSpan' + taskId).dispatchEvent(event);
     });
-    newTask.append(btnEdit);
-    newTask.append(btnDel);
+    newTask.append(iconDrag);
+    newTask.append(iconEdit);
+    newTask.append(iconDel);
     newTask.append(checkBoxObj);
     $('#newTaskListItem').before(newTask);
     $('.google-event').on('click', function (e) {
@@ -346,6 +350,8 @@ class todoListApp {
       case 27:
         editEnd();
         break;
+      default:
+	break;
       }
     });
     taskEdit.select();

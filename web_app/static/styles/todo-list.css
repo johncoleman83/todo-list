@@ -4,12 +4,7 @@
  */
 
 .secondary-content-trash {
-    float: left;
     color: #EF5350;
-}
-
-.secondary-content-edit{
-    float: left;
 }
 
 .task-color {
@@ -26,6 +21,10 @@
 
 #taskEdit {
     width: 90%;
+}
+
+.taskText {
+    font-size: 20px;
 }
 
 .task-done {

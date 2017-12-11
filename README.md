@@ -23,7 +23,9 @@ This is a basic todo app demonstrating some of my full stack skills
 
 * __Languages__
   * Python 3.6.3
-  * Vanilla Javascript & JQuery
+  * Vanilla Javascript
+    * __JQuery__: [jquery-3.2.1-min.js](https://jquery.com/download/)
+	* [jQuery Sortable](http://johnny.github.io/jquery-sortable/)
   * HTML
   * __CSS:__ [Materialize](http://materializecss.com/)
     * __icons:__ [fontawesome.io](http://fontawesome.io/)

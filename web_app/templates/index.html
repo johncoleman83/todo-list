@@ -11,6 +11,7 @@
     <title>todo list</title>
     <!-- SCRIPTS -->
     <script src="static/js/jquery-3.2.1.min.js"></script>
+    <script src="static/js/jquery-sortable.js?{{ cache_id }}"></script>
     <script src="static/js/materialize.min.js"></script>
     <script src="static/js/todo-list.js?{{ cache_id }}"></script>
     <script src="static/js/facebook-oauth.js?{{ cache_id }}"></script>
@@ -40,7 +41,7 @@
     <main>
       <div class="todo-list-container">
 	<div class="row">
-          <ul id="todo-list" class="collection hoverable">
+          <ul id="todo-list" class="collection hoverable js-sortable sortable list list-reset">
             <li
 	      id="newTaskListItem"
 	      class="collection-item">
