@@ -76,3 +76,8 @@ main {
 footer a {
     padding: 0 10px;
 }
+
+[type="checkbox"]+label {
+    padding: 0px 25px;
+    margin: 0px 10px;
+}

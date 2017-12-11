@@ -15,9 +15,9 @@ from uuid import uuid4
 app = Flask(__name__)
 app.url_map.strict_slashes = False
 ERRORS = [
-    "Not a JSON", "Missing required information", "Missing id",
-    "Wrong id type", "Missing required user information",
-    "Unknown id, please save a todo task"
+    "Not a JSON", "Missing required information",
+    "No tasks saved yet, please save a todo task"
+    "Wrong id type", "Missing required user information"
 ]
 
 
@@ -67,10 +67,10 @@ def api_get_handler(fbid=None):
     handles api get requests
     """
     if fbid is None:
-        return api_response("error", ERRORS[5], 401)
+        return api_response("error", ERRORS[2], 401)
     verified_user = storage.get_user_by_fbid(fbid)
     if verified_user is None:
-        return api_response("error", ERRORS[5], 401)
+        return api_response("error", ERRORS[2], 401)
     all_tasks = make_todo_list(verified_user)
     return jsonify(all_tasks), 201
 

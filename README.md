@@ -47,7 +47,7 @@ This is a basic todo app demonstrating some of my full stack skills
 
 * __v1:__ [Static Version JQuery JS Python Flask App No Storage](https://github.com/johncoleman83/todo-list/releases/tag/v1)
 
-### usage static
+## usage static
 
 ```
 $ ./app.py
@@ -55,14 +55,47 @@ $ ./app.py
 
 * __v2:__ [Facebook OAuth - MySQL DB Storage Engine - Docker](https://github.com/johncoleman83/todo-list/releases/tag/v2)
 
-### usage OAuth & Docker DB storage
+## usage OAuth & Docker DB storage
 
-1. setup Docker
-  * instructions below
-  * Facebook Application settings need to be configured with localhost
+* __(1) Setup Docker development database__
 
-2.  Configure ENV Variables (Optional)
+(Facebook Application settings need to be configured with localhost)
+  * pull latest docker mysql image from docker hub
 
+```
+$ docker pull mysql:latest
+```
+
+  * start todo-mysql container
+
+```
+$ docker run --name todo-mysql --detach --env MYSQL_ALLOW_EMPTY_PASSWORD='yes' \
+	--env MYSQL_DATABASE='todo_dev_db' --publish 3306:3306 mysql:latest
+```
+
+  * __Note:__
+
+    * *wait 7 seconds to make sure the container and mysql is ready*
+    * *the next 2 commands require mysql server to be installed to execute them*
+    * *make note of the* LOCAL_IP *used to bind to the docker container*
+      * Linux: `172.17.0.2`
+	  * mac OS: `0.0.0.0`
+
+  * verify container was created successfully
+
+```
+$ docker ps -a
+CONTAINER ID   IMAGE         ...  ...  STATUS           PORTS                    NAMES
+51cc1b82aef8   mysql:latest  ...  ...  Up 44 seconds    0.0.0.0:3306->3306/tcp   todo-mysql
+```
+
+  * verify database exists
+
+```
+$ docker exec [CONTAINER ID] echo 'SHOW DATABASES;' | mysql -h[LOCAL_IP] -uroot
+```
+
+* __(2) Configure ENV Variables (Optional)*__
   * `APP_HOST`
   * `APP_PORT`
   * `TODO_KEY`
@@ -71,49 +104,10 @@ $ ./app.py
   * `TODO_DB_HOST`
   * `TODO_MYSQL_DB`
 
-3. execute todo app backend app server
-
-* Linux
+* __(3) execute todo app backend app server__
 
 ```
-$ TODO_DB_HOST=172.17.0.2 python3 -m web_app.app
-```
-
-* Mac OS
-
-```
-$ TODO_DB_HOST=0.0.0.0 python3 -m web_app.app
-```
-## Setup Docker development database
-
-* pull latest docker mysql image from docker hub
-
-```
-$ docker pull mysql:latest
-```
-
-* start todo-mysql container
-
-```
-$ docker run --name todo-mysql --detach --env MYSQL_ALLOW_EMPTY_PASSWORD='yes' \
-	--env MYSQL_DATABASE='todo_dev_db' --publish 3306:3306 mysql:latest
-```
-
-* __Note:__
-
-  * *wait 7 seconds to make sure the container and mysql is ready*
-  * *the next 2 commands require mysql server to be installed to execute them*
-
-* verify database exists (Linux)
-
-```
-$ docker exec $MYSQL_CONTAINER echo 'SHOW DATABASES;' | mysql -h172.17.0.2 -uroot
-```
-
-* verify database exists (mac OS)
-
-```
-$ docker exec $MYSQL_CONTAINER echo 'SHOW DATABASES;' | mysql -h0.0.0.0 -uroot
+$ TODO_DB_HOST=[LOCAL_IP] python3 -m web_app.app
 ```
 
 ## Terms of use and Privacy Statement

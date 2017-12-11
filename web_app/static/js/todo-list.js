@@ -1,6 +1,7 @@
 const dateLabels = ['Deadline', 'Start Time', 'Appointment'];
 const jsonColors = ['red', 'orange', 'blue'];
 const injections = [/"/g, /'/g, /</g, />/g]
+var googleEventToggled = false;
 const allTasks = {}
 var todoApp
 
@@ -205,7 +206,8 @@ function todoAppClass () {
       }
       let date_time = convertToISO(todoTaskObj['date'], this_time);
       let dateModal = [
-	'<a href="http://www.google.com/calendar/event?action=TEMPLATE&',
+	'<a class="google-event"',
+	'href="http://www.google.com/calendar/event?action=TEMPLATE&',
 	'text=' + encodeURI(todoTaskObj['text']) + '&',
 	'dates=' + date_time + '&location=&details=" target="_blank">',
 	'<i class="fa fa-calendar-plus-o" aria-hidden="true"></i>',
@@ -262,6 +264,9 @@ function todoAppClass () {
     newTask.append(btnDel);
     newTask.append(checkBoxObj);
     newTaskListItem.before(newTask);
+    $('.google-event').on('click', function (e) {
+      googleEventToggled = true;
+    });
   }
 
   /**
@@ -369,6 +374,8 @@ function todoAppClass () {
    */
   self.clickCheckBox = function (e) {
     var label = $(e.currentTarget);
+    if (label.attr('id').slice(0, 2) == 'cb') { return; }
+    if (googleEventToggled) { googleEventToggled = false; return; }
     var checkBoxObj = label.prev();
     var checked = checkBoxObj.prop('checked');
     if (checked) {
