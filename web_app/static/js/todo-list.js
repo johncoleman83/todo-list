@@ -90,6 +90,21 @@ function convertToISO (date, time) {
   return date + time + '%2F' + timeEnd;
 }
 
+
+function checkUserPriority (priority) {
+  let count = 1;
+  for (let key in allTasks) {
+    console.log(key);
+    console.log(allTasks[key]);
+    if (allTasks[key]['priority'] == priority) {
+      count += 1;
+    }
+  }
+  if (count > 1) {
+    alert('There are now ' + count + ' priorities of number: ' + priority);
+  }
+}
+
 /**
  * createTaskObject
  * creates js object and adds to global object allTasks.  Object is based on
@@ -102,10 +117,13 @@ function convertToISO (date, time) {
  * @time {String} time
  * @text {String} the text of todo item
  */
-function createTaskObject (newId, color, dateLabel, date, time, text) {
+function createTaskObject (priority, newId, color, dateLabel, date, time, text) {
   let todoTaskObj = {};
   todoTaskObj['id'] = newId;
   todoTaskObj['labelClass'] = 'title';
+  // TODO: check what priority is when no input
+  todoTaskObj['priority'] = priority;
+  checkUserPriority(priority);
   if (color > 0) { todoTaskObj['color'] = JSONCOLORS[color - 1]; }
   if (dateLabel > 0) { todoTaskObj['dateLabel'] = DATELABELS[dateLabel - 1]; }
   if (date) { todoTaskObj['date'] = date; }
@@ -230,6 +248,7 @@ class todoListApp {
 
     checkBoxObj.on('click', todoListApp.clickCheckBox);
     checkBoxObj.on('dblclick', todoListApp.editTask);
+    let priority = '<span id="taskPriorityListItem"> ' + allTasks[taskId]['priority'];  + ' </span>'
     let iconDel = $(
       '<a href="" class="secondary-content-trash task-editions">' +
         '<i class="fa fa-trash-o fa-lg" aria-hidden="true"></i></a>'
@@ -252,6 +271,7 @@ class todoListApp {
       });
       document.getElementById('taskTextSpan' + taskId).dispatchEvent(event);
     });
+    newTask.append(priority);
     newTask.append(iconDrag);
     newTask.append(iconEdit);
     newTask.append(iconDel);
@@ -270,14 +290,15 @@ class todoListApp {
   static addTask (e) {
     let newId = uuidv4();
     let text = $.trim($('#inputNewTask').val());
+    let priority = parseInt($('#inputTaskPriority').val());
 
-    if (text) {
+    if (text && (priority || priority == 0)) {
       let color = parseInt($('#inputColor').val());
       let dateLabel = parseInt($('#inputDateLabel').val());
       let date = $.trim($('#inputTaskDate').val());
       let time = $.trim($('#inputTaskTime').val());
 
-      createTaskObject(newId, color, dateLabel, date, time, text);
+      createTaskObject(priority, newId, color, dateLabel, date, time, text);
       todoListApp.buildTaskAppendToList(newId);
       todoListApp.resetAddTaskValues();
     }

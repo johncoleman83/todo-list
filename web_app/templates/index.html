@@ -47,6 +47,15 @@
 	      id="newTaskListItem"
 	      class="collection-item">
 	      <div class="row">
+		<div class="input-field col l1 m1 s12">
+		  <input placeholder="Priority"
+			 id="inputTaskPriority"
+			 type="number"
+			 step="1"
+			 min="0"
+			 value=""
+			 name="taskPriority">
+		</div>
 		<div class="input-field col l2 m4 s12">
 		  <select id="inputDateLabel" >
 		    <option value="0">none</option>
@@ -56,7 +65,7 @@
 		  </select>
 		  <label>Date Label</label>
  		</div>
-		<div class="input-field col l2 m4 s6">
+		<div class="input-field col l1 m3 s6">
 		  <input id="inputTaskDate"
 			 placeholder="Date"
 			 type="text"
