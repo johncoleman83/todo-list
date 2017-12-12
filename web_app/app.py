@@ -5,6 +5,7 @@ Flask App for Todo List MVP
 from datetime import datetime
 from flask import abort, Flask, jsonify
 from flask import render_template, request, url_for
+from flask_cors import CORS, cross_origin
 import json
 from models import storage, Task, User, REQUIRED, APP_PORT, APP_HOST
 import requests
@@ -14,6 +15,7 @@ from uuid import uuid4
 # flask setup
 app = Flask(__name__)
 app.url_map.strict_slashes = False
+cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 ERRORS = [
     "Not a JSON", "Missing required information",
     "No tasks saved yet, please save a todo task"
