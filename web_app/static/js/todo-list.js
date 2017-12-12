@@ -178,7 +178,7 @@ class todoListApp {
   static taskObjToHtml (taskId) {
     let todoTaskObj = allTasks[taskId];
     let htmlModal = [];
-    if (todoTaskObj['color']) { htmlModal.push(getHtmlColor(todoTaskObj['color'])); }
+    //if (todoTaskObj['color']) { htmlModal.push(getHtmlColor(todoTaskObj['color'])); }
     if (todoTaskObj['dateLabel']) { htmlModal.push(todoTaskObj['dateLabel'] + ': '); }
     if (todoTaskObj['date']) {
       let thisTime;
@@ -211,8 +211,14 @@ class todoListApp {
    * @taskId {String} the object ID
    */
   static buildTaskAppendToList (taskId) {
+    let color;
+    if (allTasks[taskId]['color']) {
+      color = allTasks[taskId]['color'] + ' lighten-5';
+    } else {
+      color = '';
+    }
     let newTask = $(
-      '<li class="collection-item" data-id="' + taskId + '"></li>'
+      '<li class="collection-item ' + color + '" data-id="' + taskId + '"></li>'
     );
     let htmlModal = todoListApp.taskObjToHtml(taskId);
     let labelClass = allTasks[taskId]['labelClass'];
