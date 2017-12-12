@@ -164,11 +164,19 @@ function handleDevelopmentAccount () {
 function checkFacebookStatus () {
   $('#save-message').text('');
 
-  if (FB.getLoginStatus() == undefined) {
-    handleDevelopmentAccount()
-    return;
-  }
-  FB.getLoginStatus(function(res){
+  /**
+   * Enable this for Development
+   * Need to ping this to automate this service:
+   * https://www.facebook.com/connect/ping?client_id=131891487494882&
+   * domain=localhost&origin=1&redirect_uri=http%3A%2F%2Fstaticxx.facebook.com
+   * %2Fconnect%2Fxd_arbiter%2Fr%2FlY4eZXm_YWu.js%3Fversion%3D42%23cb%3Df18520
+   * 5a172cd8%26domain%3Dlocalhost%26origin%3Dhttp%253A%252F%252Flocalhost%253
+   * A5001%252Ff1ffe8d880867e8%26relation%3Dparent&response_type=token%2Csigne
+   * d_request%2Ccode&sdk=joey
+   */
+  //handleDevelopmentAccount();
+  //return;
+  FB.getLoginStatus(function(res) {
     if ( res.status == "unknown" ){
       updateFBStatusBox('Logged Out');
     } else if ( res.status === 'connected' ) {
