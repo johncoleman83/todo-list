@@ -7,6 +7,10 @@ import os
 import sys
 
 KEY = os.getenv('TODO_KEY', '1OWU3m77xWS5r_CfcQ63mRlyQDvR3VEfud4Img8psVE=')
+SECRET_VALIDATION = (
+    "bCCHjJ4CddOvuz&Yoce4^hpQqSr5393LtxF8#Dlv@a*O0MXlp8sdwQI%LwYlPAB*cNbVV9EUG"
+    "lDsAkwPpcBeQ$F0A1Tdtnf%9eEe"
+)
 TODO_KEY = KEY.encode('utf-8')
 CIPHER = Fernet(KEY)
 

@@ -68,7 +68,6 @@ window.addEventListener('resize', function () {
   window.requestAnimationFrame(reCalc);
 }, false);
 
-
 // Just for this demo: Center the middle block on page load
 window.onload = function () {
   setScrollPos(Math.round(clones[0].getBoundingClientRect().top + getScrollPos() - (context.offsetHeight - clones[0].offsetHeight) / 2));

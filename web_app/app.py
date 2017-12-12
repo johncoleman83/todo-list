@@ -8,6 +8,7 @@ from flask import render_template, request, url_for
 from flask_cors import CORS, cross_origin
 import json
 from models import storage, Task, User, REQUIRED, APP_PORT, APP_HOST
+from models.secrets import SECRET_VALIDATION
 import requests
 from uuid import uuid4
 
@@ -18,8 +19,9 @@ app.url_map.strict_slashes = False
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 ERRORS = [
     "Not a JSON", "Missing required information",
-    "No tasks saved yet, please save a todo task"
-    "Wrong id type", "Missing required user information"
+    "No tasks saved yet, please save a todo task",
+    "Wrong id type", "Missing required user information",
+    "not an authenticated request"
 ]
 
 
@@ -50,7 +52,8 @@ def main_index():
     """
     if request.method == 'GET':
         cache_id = uuid4()
-        return render_template('index.html', cache_id=cache_id)
+        secret = User.text_encrypt(SECRET_VALIDATION)
+        return render_template('index.html', secret=secret, cache_id=cache_id)
 
 
 def make_todo_list(verified_user):
@@ -63,16 +66,22 @@ def make_todo_list(verified_user):
     return all_tasks
 
 
-@app.route('/api/<fbid>', methods=['GET'])
-def api_get_handler(fbid=None):
+@app.route('/api/<fbid>/<secret>', methods=['GET'])
+def api_get_handler(fbid=None, secret=None):
     """
     handles api get requests
     """
-    if fbid is None:
+    if fbid is None or secret is None:
         return api_response("error", ERRORS[2], 401)
     verified_user = storage.get_user_by_fbid(fbid)
     if verified_user is None:
         return api_response("error", ERRORS[2], 401)
+    try:
+        encrypted_secret = User.text_decrypt(secret)
+    except Exception as e:
+        return api_response("error", str(e), 401)
+    if encrypted_secret != SECRET_VALIDATION:
+        return api_response("error", ERRORS[5], 401)
     all_tasks = make_todo_list(verified_user)
     return jsonify(all_tasks), 201
 
@@ -127,6 +136,15 @@ def verify_proper_post_request(req_data):
     user_info = req_data.get('userInfo', None)
     if user_info is None:
         return 1
+    secret = req_data.get('secret')
+    if secret is None:
+        return 5
+    try:
+        encrypted_secret = User.text_decrypt(secret)
+    except Exception as e:
+        return 5
+    if encrypted_secret != SECRET_VALIDATION:
+        return 5
     fbid = user_info.get('fbid', None)
     if fbid is None:
         return 2
