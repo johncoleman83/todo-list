@@ -63,7 +63,7 @@ function sleepFor (sleepDuration) {
  */
 function removeInjections(text) {
   for (let i in INJECTIONS) {
-    text = text.replace(i, '');
+    text = text.replace(INJECTIONS[i], '');
   }
   return text;
 }
@@ -219,8 +219,8 @@ class todoListApp {
     let labelClass = allTasks[taskId]['labelClass'];
     let checkBoxObj = $([
       '<input id="cb-' + taskId + '" type="checkbox" name="' + taskId,
-      '" value=""><label id="' + taskId + '" for="cb-' + taskId + '" class="',
-      labelClass + '">' + htmlModal + '</label>'
+      '" value=""><label id="label-' + taskId + '" for="cb-' + taskId + '" ',
+      'class="' + labelClass + '">' + htmlModal + '</label>'
     ].join(''));
 
     checkBoxObj.on('click', todoListApp.clickCheckBox);
@@ -233,7 +233,7 @@ class todoListApp {
       '<i class="fa fa-arrows icon-move task-editions fa-lg" aria-hidden="true"></i>'
     );
     let iconEdit = $(
-      '<a href="" id="' + taskId
+      '<a href="" id="ed-' + taskId
 	+ '" class="task-editions">' +
 	'<i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i></a>'
     );
@@ -323,7 +323,7 @@ class todoListApp {
   static editTask(e) {
     let label = $(e.currentTarget);
     let text = label.text();
-    let taskId = label.attr('id');
+    let taskId = label.attr('id').slice(6);
     let taskEdit = $(
       '<input type="text" name="taskEdit" value="' + allTasks[taskId]['text'] +
 	'" placeholder="" id="taskEdit">'
@@ -343,6 +343,7 @@ class todoListApp {
       case 13:
         let newText = $.trim(taskEdit.val());
         if (newText) {
+	  newText = removeInjections(newText);
 	  updateTaskVal(taskId, 'text', newText)
         }
         editEnd();
@@ -364,20 +365,19 @@ class todoListApp {
    */
   static clickCheckBox(e) {
     let label = $(e.currentTarget);
-    if (label.attr('id').slice(0, 2) == 'cb') { return; }
+    let taskId = label.attr('id').slice(6);
+    let check = label.attr('id').slice(0, 2);
+
+    if (check == 'cb') { return; }
     if (googleEventToggled) { googleEventToggled = false; return; }
     let checkBoxObj = label.prev();
     let checked = checkBoxObj.prop('checked');
     if (checked) {
       label.removeClass('task-done');
-      if (label.attr('id').slice(0, 2) != 'cb') {
-	updateTaskVal(label.attr('id'), 'labelClass', 'title')
-      }
+      updateTaskVal(taskId, 'labelClass', 'title')
     } else {
       label.addClass('task-done');
-      if (label.attr('id').slice(0, 2) != 'cb') {
-	updateTaskVal(label.attr('id'), 'labelClass', 'title task-done')
-      }
+      updateTaskVal(taskId, 'labelClass', 'title task-done')
     }
   };
 

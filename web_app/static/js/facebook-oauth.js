@@ -10,7 +10,6 @@ window.fbAsyncInit = function () {
     cookie: true,
     xfbml: true
   });
-
   $(document).trigger('fbload');
 };
 

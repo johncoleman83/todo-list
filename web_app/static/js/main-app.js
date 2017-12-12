@@ -126,6 +126,37 @@ function getUserInfo () {
   });
 }
 
+
+/**
+ * updateFBStatusBox
+ * updates the HTML in the status section for FB status
+ */
+function updateFBStatusBox (message) {
+  $('#fb-status-message').text('');
+  let fbConnect =
+      '<i class="fa fa-facebook-square"></i> ' + message;
+  $('#fb-status-message').append(fbConnect);
+
+}
+
+/**
+ * handleDevelopmentAccount
+ * populates data with development account info when unable to connect to FB
+ */
+function handleDevelopmentAccount () {
+  rJSON['userInfo']['name'] = DEVELOPMENT_FB_NAME;
+  rJSON['userInfo']['fbid'] = DEVELOPMENT_FB_ID;
+  rJSON['userInfo']['email'] = DEVELOPMENT_FB_EMAIL;
+  rJSON['userInfo']['photo'] = DEVELOPMENT_FB_PHOTO;
+  let imgHTML =
+      '<img id="header-image" class="left" src="' + DEVELOPMENT_FB_PHOTO + '"/>';
+  buildFBHTML(
+    DEVELOPMENT_FB_NAME, DEVELOPMENT_FB_ID, DEVELOPMENT_FB_EMAIL, imgHTML
+  );
+  updateFBStatusBox('Not Connected to Facebook');
+  getRequestLoadTodoList();
+}
+
 /**
  * checkFacebookStatus
  * checks user Facebook login/ authentication status
@@ -133,17 +164,19 @@ function getUserInfo () {
 function checkFacebookStatus () {
   $('#save-message').text('');
 
+  if (FB.getLoginStatus() == undefined) {
+    handleDevelopmentAccount()
+    return;
+  }
   FB.getLoginStatus(function(res){
     if ( res.status == "unknown" ){
-      $('#fb-status-message').text('Logged Out');
+      updateFBStatusBox('Logged Out');
     } else if ( res.status === 'connected' ) {
       getUserInfo()
-      $('#fb-status-message').text('');
-      let fbConnect =
-	  '<i class="fa fa-facebook-square"></i> Connected to Facebook';
-      $('#fb-status-message').append(fbConnect);
+      updateFBStatusBox('Connected to Facebook');
     }
   });
+
   FB.Event.subscribe('auth.authResponseChange', function (response) {
     if (response.status === 'connected') {
       $('#fb-status-message').text('Connected to Facebook');
