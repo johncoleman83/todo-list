@@ -61,9 +61,9 @@ function buildFBError (code, message) {
  * makes get request to backend to check for user data
  */
 function getRequestLoadTodoList () {
-  let secret = $('.todo-secret-encryption').attr('id');
+  let token = $('.todo-bearer-token').attr('id');
   $.ajax({
-    url: domain + '/' + rJSON['userInfo']['fbid'] + '/' + secret,
+    url: domain + '/' + rJSON['userInfo']['fbid'] + '/' + token,
     type: 'GET',
     contentType: 'application/json; charset=utf-8',
     dataType: 'json',
@@ -210,7 +210,7 @@ function postRequestSaveTodoList () {
     $('#save-message').append(newData.join(''));
   } else {
     rJSON['allTasks'] = allTasks;
-    rJSON['secret'] = $('.todo-secret-encryption').attr('id');
+    rJSON['token'] = $('.todo-bearer-token').attr('id');
     $.ajax({
       url: domain,
       type: 'POST',

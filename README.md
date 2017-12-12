@@ -17,6 +17,7 @@ This is a basic todo app demonstrating some of my full stack skills
 ## Environment
 
 * __Server__
+  * __host:__ Amazon AWS EC2 instance
   * __OS:__ Linux Ubuntu 16.04.3 LTS (xenial)
   * __firewall:__ ufw 0.35
   * __SSL Cert:__ Let's Encrypt [certbot 0.19.0](https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-ubuntu-16-04)
@@ -41,7 +42,7 @@ This is a basic todo app demonstrating some of my full stack skills
   * __docker dev DB:__ mysql latest
 
 * __style:__
-  * __python:__ PEP 8 (v. 1.7.0)
+  * __python:__ pycodestyle==2.3.1
   * __web static:__ [W3C Validator](https://validator.w3.org/)
   * __JavaScript:__ semistandard 11.0.0
 
@@ -49,7 +50,7 @@ This is a basic todo app demonstrating some of my full stack skills
 
 * __v1:__ [Static Version JQuery JS Python Flask App No Storage](https://github.com/johncoleman83/todo-list/releases/tag/v1)
 
-## usage static
+## usage static release v1
 
 ```
 $ ./app.py
@@ -66,7 +67,7 @@ release.__
 $ git clone "https://github.com/johncoleman83/todo-list.git"
 ```
 
-## usage OAuth & Docker DB storage
+## usage OAuth & Docker DB storage (current release)
 
 * __(1) Setup Docker development database__
 
@@ -119,6 +120,19 @@ $ docker exec [CONTAINER ID] echo 'SHOW DATABASES;' | mysql -h[LOCAL_IP] -uroot
 
 ```
 $ TODO_DB_HOST=[LOCAL_IP] python3 -m web_app.app
+```
+
+
+## Testing
+
+### `unittest`
+
+* This project uses python library, `unittest` to run tests on all python files.
+* All unittests are in the `./tests`.
+* Run tests with this command:
+
+```
+$ TODO_DB_HOST=[LOCAL_IP] python3 -m unittest discover -v ./tests/
 ```
 
 ## Terms of use and Privacy Statement

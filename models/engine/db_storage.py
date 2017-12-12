@@ -39,6 +39,8 @@ class DBStorage:
         verifies if the db has initialized or noe
         """
         tables = {"User": "users", "Task": "tasks"}
+        if cls is None:
+            return False
         if not self.__engine.dialect.has_table(self.__engine, tables[cls]):
             return False
         return True
@@ -132,10 +134,10 @@ class DBStorage:
         """
         deletes all stored objects, for testing purposes
         """
-        for c in DBStorage.CNC.values():
-            if not self.verify_tables(c):
+        for c_name, c_obj in DBStorage.CNC.items():
+            if not self.verify_tables(c_name):
                 continue
-            a_query = self.__session.query(c)
+            a_query = self.__session.query(c_obj)
             all_objs = [obj for obj in a_query]
             for obj in range(len(all_objs)):
                 to_delete = all_objs.pop(0)
