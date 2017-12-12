@@ -48,15 +48,19 @@ This is a basic todo app demonstrating some of my full stack skills
 
 ## Releases
 
-* __v1:__ [Static Version JQuery JS Python Flask App No Storage](https://github.com/johncoleman83/todo-list/releases/tag/v1)
+### __v1:__ Static
 
-## usage static release v1
+* [Static Version JQuery JS Python Flask App No Storage](https://github.com/johncoleman83/todo-list/releases/tag/v1)
+* usage static release v1
 
 ```
 $ ./app.py
 ```
 
-* __v2:__ Facebook OAuth - MySQL DB Storage Engine - Docker
+### __v2:__ Storage Model
+
+* __This is the current release__
+* Facebook OAuth - MySQL DB Storage Engine - Docker
 
 This Release uses Facebooks OAuth for Authentication & MySQL database as a
 storage model for all user tasks. There is also setup instructions and
@@ -67,7 +71,9 @@ release.__
 $ git clone "https://github.com/johncoleman83/todo-list.git"
 ```
 
-## usage OAuth & Docker DB storage (current release)
+## Usage
+
+* instructions for OAuth & Docker DB storage model (current release)
 
 * __(1) Setup Docker development database__
 
