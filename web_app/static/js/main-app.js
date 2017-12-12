@@ -204,7 +204,7 @@ function postRequestSaveTodoList () {
       typeof rJSON['userInfo']['email'] === 'undefined') {
     $('#save-message').text('');
     newData = [
-      '<i class="fa fa-exclamation-triangle left" aria-hidden="true"></i>',
+      '<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>',
       ' you must authenticate to save!</div>'
     ];
     $('#save-message').append(newData.join(''));
