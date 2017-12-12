@@ -15,6 +15,7 @@ from uuid import uuid4
 
 # flask setup
 app = Flask(__name__)
+app.testing = True
 app.url_map.strict_slashes = False
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 ERRORS = [
@@ -183,6 +184,9 @@ def api_post_handler():
 
 @app.errorhandler(404)
 def page_not_found(error):
+    """
+    404 page error handler
+    """
     cache_id = uuid4()
     return render_template('404.html', cache_id=cache_id), 404
 
