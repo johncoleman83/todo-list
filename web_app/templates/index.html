@@ -121,27 +121,31 @@
       <div id="facebook-container" class="container grey lighten-2">
 	<div class="hoverable center-align">
 	  <div class="row">
-	    <!--h4>save todo list</h4-->
-	    <div id="status">
-	      Please Authenticate with Facebook to save todo list<br/>
-	      <a class="btn waves-effect waves-light btn-large blue darken-1"
-		 onclick="Login()">
-		<i class="fa fa-facebook-square fa-2x"
-		   style="margin-right:10px;"></i>
-		<span>Login with <strong>Facebook</strong></span>
-	      </a>
+	    <div class="col l8 m12 s12">
+	      <!--h4>save todo list</h4-->
+	      <div id="status">
+		Please Authenticate with Facebook to save todo list<br/>
+		<a class="btn waves-effect waves-light btn-large blue darken-1"
+		   onclick="Login()">
+		  <i class="fa fa-facebook-square fa-2x"
+		     style="margin-right:10px;"></i>
+		  <span>Login with <strong>Facebook</strong></span>
+		</a>
+	      </div>
+	      <div id="fb-status-message" class="row">
+		<i class="fa fa-spinner fa-pulse fa-fw"></i>
+		loading status...
+	      </div>
 	    </div>
-	    <div id="fb-status-message" class="row">
-	      <i class="fa fa-spinner fa-pulse fa-fw"></i>
-	      loading status...
+	    <div class="col l4 sm12 s12">
+              <div id="{{ secret }}" class="row todo-secret-encryption">
+		<button id="saveTodoList"
+			class="btn waves-effect waves-light green-blue right-align">
+		  <i class="fa fa-download" aria-hidden="true"></i>
+		  <span class="">Save</span></button>
+              </div>
+              <div id="save-message" class="row"></div>
 	    </div>
-            <div id="{{ secret }}" class="col l4 m4 s12 todo-secret-encryption">
-              <button id="saveTodoList"
-		      class="btn waves-effect waves-light green-blue right-align">
-		<i class="fa fa-download" aria-hidden="true"></i>
-		<span class="">Save</span></button>
-            </div>
-            <div id="save-message" class="col l6 m6 s12"></div>
 	  </div>
 	</div>
       </div>

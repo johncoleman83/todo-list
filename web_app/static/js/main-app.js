@@ -76,7 +76,6 @@ function getRequestLoadTodoList () {
         }
         $('#save-message').text('');
         newData = [
-          '<div class="left">',
           '<i class="fa fa-tasks" aria-hidden="true"></i>',
           '  Tasks Loaded!</div>'
         ];
@@ -86,7 +85,7 @@ function getRequestLoadTodoList () {
         $('#save-message').text('');
         let message = data['error'];
         newData = [
-          '<div class="left">',
+          '<div class="center">',
           '<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>',
           message + '</div>'
         ];
@@ -205,7 +204,6 @@ function postRequestSaveTodoList () {
       typeof rJSON['userInfo']['email'] === 'undefined') {
     $('#save-message').text('');
     newData = [
-      '<div class="left">',
       '<i class="fa fa-exclamation-triangle left" aria-hidden="true"></i>',
       ' you must authenticate to save!</div>'
     ];
@@ -225,7 +223,6 @@ function postRequestSaveTodoList () {
           message = data['success'];
           $('#save-message').text('');
           newData = [
-            '<div class="left">',
             '<i class="fa fa-telegram" aria-hidden="true"></i>',
             ' ' + message + '</div>'
           ];
@@ -234,7 +231,6 @@ function postRequestSaveTodoList () {
           message = data['error'];
           $('#save-message').text('');
           newData = [
-            '<div class="left">',
             '<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>',
             message + '</div>'
           ];
