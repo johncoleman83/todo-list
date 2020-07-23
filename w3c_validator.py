@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-W3C validator for Holberton School
+W3C validator for Bootcamp School
 
 For HTML and CSS files.
 
